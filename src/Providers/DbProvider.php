@@ -36,8 +36,12 @@ class DbProvider extends Provider{
         $this->ormCollection = $ormCollection;
         $params = [];
         foreach($blocks as $block){
-            $params['path'][] = ($path = rtrim($block['path'],'/').'/Tables/');
-            $params['repositories'][] = ['path' => $path, 'namespace' => $block['namespace'].'\Models'];
+            $params['path'][] = (isset($block['model']))
+                ? ($path = rtrim($block['model'],'/'))
+                : ($path = rtrim($block['path'],'/').'/Models/');
+            $params['repositories'][] = (isset($block['repositories']))
+                ? ['path' => $block['repositories']['path'], 'namespace' => $block['repositories']['namespace']]
+                : ['path' => $path, 'namespace' => $block['namespace'].'\Models'];
         }
         if($env == 'dev') $params['dev'] = true;
         foreach($db as $key => $uniqueDb) $db[$key] = array_merge($db[$key],$params);
