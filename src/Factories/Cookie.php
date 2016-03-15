@@ -1,14 +1,13 @@
 <?php
 
-namespace JetFire\Framework\Factory;
+namespace JetFire\Framework\Factories;
 use JetFire\Framework\App;
 
-
 /**
- * Class Server
- * @package JetFire\Framework\Factory
+ * Class Cookie
+ * @package JetFire\Framework\Factories
  */
-class Server {
+class Cookie {
 
     /**
      * @var
@@ -16,11 +15,11 @@ class Server {
     private static $instance;
 
     /**
-     * @return mixed
+     *
      */
     public function __construct(){
         if(is_null(self::$instance))
-            self::$instance = App::getInstance()->get('request')->getServer();
+            self::$instance = App::getInstance()->get('request')->getCookies();
         return self::$instance;
     }
 
@@ -29,7 +28,7 @@ class Server {
      */
     public static function getInstance(){
         if(is_null(self::$instance))
-            self::$instance = App::getInstance()->get('request')->getServer();
+            self::$instance = App::getInstance()->get('request')->getCookies();
         return self::$instance;
     }
 
@@ -50,5 +49,4 @@ class Server {
     public function __call($name,$args){
         return call_user_func_array([self::getInstance(),$name],$args);
     }
-
-}
+} 

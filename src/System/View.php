@@ -2,12 +2,12 @@
 
 namespace JetFire\Framework\System;
 use JetFire\Framework\App;
-
+use JetFire\Template\View as TemplateView;
 /**
  * Class View
  * @package JetFire\Framework\System
  */
-class View extends \JetFire\Template\View{
+class View extends TemplateView{
 
     /**
      * @var
@@ -19,7 +19,7 @@ class View extends \JetFire\Template\View{
      */
     public static function getInstance(){
         if(is_null(self::$instance))
-            self::$instance = App::getInstance()->get('JetFire\Framework\System\View');
+            self::$instance = App::getInstance()->get('response')->getView();
         return self::$instance;
     }
 

@@ -1,15 +1,14 @@
 <?php
 
-namespace JetFire\Framework\Factory;
-
-
+namespace JetFire\Framework\Factories;
 use JetFire\Framework\App;
 
+
 /**
- * Class Session
- * @package JetFire\Framework\Factory
+ * Class Cache
+ * @package JetFire\Framework\Factories
  */
-class Session {
+class Cache {
 
     /**
      * @var
@@ -21,7 +20,7 @@ class Session {
      */
     public function __construct(){
         if(is_null(self::$instance))
-            self::$instance = App::getInstance()->get('request')->getSession();
+            self::$instance = App::getInstance()->get('cache')->getCache();
         return self::$instance;
     }
 
@@ -30,8 +29,25 @@ class Session {
      */
     public static function getInstance(){
         if(is_null(self::$instance))
-            self::$instance = App::getInstance()->get('request')->getSession();
+            self::$instance = App::getInstance()->get('cache')->getCache();
         return self::$instance;
+    }
+
+    /**
+     * @param $key
+     * @return mixed
+     */
+    public static function get($key){
+        return self::getInstance()->fetch($key);
+    }
+
+    /**
+     * @param $key
+     * @param $value
+     * @return mixed
+     */
+    public static function set($key,$value){
+        return self::getInstance()->save($key,$value);
     }
 
     /**
@@ -51,4 +67,4 @@ class Session {
     public function __call($name,$args){
         return call_user_func_array([self::getInstance(),$name],$args);
     }
-}
+} 

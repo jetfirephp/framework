@@ -58,7 +58,7 @@ if (!function_exists('view')) {
     function view($path = null, $data = [])
     {
         $app = App::getInstance();
-        $view = $app->get('JetFire\Framework\System\View');
+        $view = $app->get('response')->getView();
         if(is_null($path) && empty($data)) return $view;
         $flash = $app->get('session')->getSession()->allFlash();
         foreach ($flash as $type => $messages) {
@@ -95,8 +95,8 @@ if (!function_exists('redirect')) {
     function redirect($to = null)
     {
         if (is_null($to))
-            return App::getInstance()->get('JetFire\Http\Redirect');
-        return App::getInstance()->get('JetFire\Http\Redirect')->to($to);
+            return App::getInstance()->get('response')->getRedirect();
+        return App::getInstance()->get('response')->getRedirect()->to($to);
     }
 }
 

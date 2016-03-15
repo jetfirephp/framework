@@ -1,12 +1,12 @@
 <?php
 
-namespace JetFire\Framework\Factory;
+namespace JetFire\Framework\Factories;
 use JetFire\Framework\App;
 
 
 /**
  * Class Mail
- * @package JetFire\Framework\Factory
+ * @package JetFire\Framework\Factories
  */
 class Mail {
 

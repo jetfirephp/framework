@@ -1,14 +1,15 @@
 <?php
 
-namespace JetFire\Framework\Factory;
+namespace JetFire\Framework\Factories;
+
+
 use JetFire\Framework\App;
 
-
 /**
- * Class File
+ * Class Session
  * @package JetFire\Framework\Factory
  */
-class File {
+class Session {
 
     /**
      * @var
@@ -20,7 +21,7 @@ class File {
      */
     public function __construct(){
         if(is_null(self::$instance))
-            self::$instance = App::getInstance()->get('request')->getFiles();
+            self::$instance = App::getInstance()->get('request')->getSession();
         return self::$instance;
     }
 
@@ -29,7 +30,7 @@ class File {
      */
     public static function getInstance(){
         if(is_null(self::$instance))
-            self::$instance = App::getInstance()->get('request')->getFiles();
+            self::$instance = App::getInstance()->get('request')->getSession();
         return self::$instance;
     }
 

@@ -1,14 +1,14 @@
 <?php
 
-namespace JetFire\Framework\Factory;
+namespace JetFire\Framework\Factories;
 use JetFire\Framework\App;
 
 
 /**
- * Class Cache
- * @package JetFire\Framework\Factory
+ * Class Server
+ * @package JetFire\Framework\Factories
  */
-class Cache {
+class Server {
 
     /**
      * @var
@@ -16,11 +16,11 @@ class Cache {
     private static $instance;
 
     /**
-     *
+     * @return mixed
      */
     public function __construct(){
         if(is_null(self::$instance))
-            self::$instance = App::getInstance()->get('cache')->getCache();
+            self::$instance = App::getInstance()->get('request')->getServer();
         return self::$instance;
     }
 
@@ -29,25 +29,8 @@ class Cache {
      */
     public static function getInstance(){
         if(is_null(self::$instance))
-            self::$instance = App::getInstance()->get('cache')->getCache();
+            self::$instance = App::getInstance()->get('request')->getServer();
         return self::$instance;
-    }
-
-    /**
-     * @param $key
-     * @return mixed
-     */
-    public static function get($key){
-        return self::getInstance()->fetch($key);
-    }
-
-    /**
-     * @param $key
-     * @param $value
-     * @return mixed
-     */
-    public static function set($key,$value){
-        return self::getInstance()->save($key,$value);
     }
 
     /**
@@ -67,4 +50,5 @@ class Cache {
     public function __call($name,$args){
         return call_user_func_array([self::getInstance(),$name],$args);
     }
-} 
+
+}
