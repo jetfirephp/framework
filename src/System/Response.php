@@ -3,9 +3,9 @@
 namespace JetFire\Framework\System;
 
 use JetFire\Routing\ResponseInterface;
-use JetFire\Http\Response as HttpResponse;
+use \Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
-class Response extends HttpResponse implements ResponseInterface{
+class Response extends SymfonyResponse implements ResponseInterface{
 
     /**
      * @param array $headers
@@ -14,6 +14,18 @@ class Response extends HttpResponse implements ResponseInterface{
     {
         foreach($headers as $key => $content)
             $this->headers->set($key,$content);
+    }
+
+    /**
+     * @param $content
+     * @param int $status
+     * @param string $type
+     */
+    public function answer($content , $status = 200,$type = 'text/html'){
+        $this->setContent($content);
+        $this->headers->set('Content-type',$type);
+        $this->setStatusCode($status);
+        $this->send();
     }
 
 } 

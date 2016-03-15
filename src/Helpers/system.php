@@ -71,6 +71,21 @@ if (!function_exists('view')) {
 
 //----------------------------------------------------------------
 
+if (!function_exists('session')) {
+
+
+    function session($key = null)
+    {
+        $app = App::getInstance();
+        if(is_null($key))
+            return $app->get('session')->getSession();
+        return $app->get('session')->getSession()->get($key);
+    }
+
+}
+
+//----------------------------------------------------------------
+
 if (!function_exists('redirect')) {
 
     /**

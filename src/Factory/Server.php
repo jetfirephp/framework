@@ -1,6 +1,7 @@
 <?php
 
 namespace JetFire\Framework\Factory;
+use JetFire\Framework\App;
 
 
 /**
@@ -17,9 +18,18 @@ class Server {
     /**
      * @return mixed
      */
+    public function __construct(){
+        if(is_null(self::$instance))
+            self::$instance = App::getInstance()->get('request')->getServer();
+        return self::$instance;
+    }
+
+    /**
+     * @return mixed
+     */
     public static function getInstance(){
         if(is_null(self::$instance))
-            self::$instance = app('request')->getServer();
+            self::$instance = App::getInstance()->get('request')->getServer();
         return self::$instance;
     }
 
@@ -29,7 +39,16 @@ class Server {
      * @return mixed
      */
     public static function __callStatic($name,$args){
-        return self::getInstance()->$name($args);
+        return call_user_func_array([self::getInstance(),$name],$args);
     }
 
-} 
+    /**
+     * @param $name
+     * @param $args
+     * @return mixed
+     */
+    public function __call($name,$args){
+        return call_user_func_array([self::getInstance(),$name],$args);
+    }
+
+}

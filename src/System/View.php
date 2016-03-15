@@ -19,7 +19,7 @@ class View extends \JetFire\Template\View{
      */
     public static function getInstance(){
         if(is_null(self::$instance))
-            self::$instance = new self;
+            self::$instance = App::getInstance()->get('JetFire\Framework\System\View');
         return self::$instance;
     }
 
@@ -37,7 +37,7 @@ class View extends \JetFire\Template\View{
             (!isset($content[1]))
                 ? $data[$key] = $content[0]
                 : $data[$key] = $content;
-        $this->setData($data);
+        $this->addData($data);
         return $app->get('template')->getTemplate()->render($this);
     }
 
@@ -52,17 +52,6 @@ class View extends \JetFire\Template\View{
         if(!is_null($path))
             return $app->get('routing')->getCollection()->getRoutePath($path,$params);
         return $app->get('request')->root();
-    }
-
-    /**
-     * @param $value
-     * @return string
-     */
-    public function asset($value){
-        if (substr($value, -3) == '.js' && is_file(ROOT.'/public/js/'.$value)) return ROOT.'/public/js/'.$value;
-        if (substr($value, -4) == '.css' && is_file(ROOT.'/public/css/'.$value)) return ROOT.'/public/css/'.$value;
-        if ((substr($value, -4) == '.png' || substr($value, -4) == '.jpg' ||  substr($value, -5) == '.jpeg' ||  substr($value, -4) == '.gif') && is_file(ROOT.'/public/img/'.$value))return ROOT.'/public/img/'.$value;
-        return ROOT.'/public/'.$value;
     }
 
 } 

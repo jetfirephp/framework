@@ -81,7 +81,6 @@ class RoutingProvider extends Provider{
      */
     public function setRouter($router,$template,$responses){
         $this->getApp()->data['template_extension'] = $extension = $template['engines'][$template['use']]['extension'];
-        $this->register($router['response'],['shared'=>true]);
         $this->response = $this->get($router['response']);
         $this->router = new Router($this->collection,$this->response);
         $ext = explode('.',$extension);
@@ -109,15 +108,17 @@ class RoutingProvider extends Provider{
                 $ext => function($route)use($template){
                     $this->register($template['view'],['shared'=>true]);
                     $view = $this->get($template['view']);
-                    $view->setPath($route->getDetail()['block']);
+                    $block = ($route->getTarget('block'))
+                        ? $route->getTarget('block')
+                        : $route->getDetail()['block'];
+                    $view->setPath($block);
                     $view->setExtension($template['engines'][$template['use']]['extension']);
-                    $view->setTemplate(str_replace($route->getDetail()['block'],'',$route->getTarget('template')));
-                    $view->setData(isset($route->getPath()['data'])?$route->getPath()['data']:[]);
+                    $view->setTemplate(str_replace($block,'',$route->getTarget('template')));
+                    $view->addData(isset($route->getPath()['data'])?$route->getPath()['data']:[]);
                     return $this->get('template')->getTemplate()->render($view);
                 }
             ]
         ]);
     }
-
 
 } 

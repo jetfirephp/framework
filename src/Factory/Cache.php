@@ -1,6 +1,7 @@
 <?php
 
 namespace JetFire\Framework\Factory;
+use JetFire\Framework\App;
 
 
 /**
@@ -15,11 +16,20 @@ class Cache {
     private static $instance;
 
     /**
+     *
+     */
+    public function __construct(){
+        if(is_null(self::$instance))
+            self::$instance = App::getInstance()->get('cache')->getCache();
+        return self::$instance;
+    }
+
+    /**
      * @return mixed
      */
     public static function getInstance(){
         if(is_null(self::$instance))
-            self::$instance = app('cache')->getCache();
+            self::$instance = App::getInstance()->get('cache')->getCache();
         return self::$instance;
     }
 
@@ -46,10 +56,15 @@ class Cache {
      * @return mixed
      */
     public static function __callStatic($name,$args){
-        if(isset($args[2]))
-            return self::getInstance()->$name($args[0],$args[1],$args[2]);
-        elseif(isset($args[1]))
-            return self::getInstance()->$name($args[0],$args[1]);
-        return self::getInstance()->$name($args[1]);
+        return call_user_func_array([self::getInstance(),$name],$args);
+    }
+
+    /**
+     * @param $name
+     * @param $args
+     * @return mixed
+     */
+    public function __call($name,$args){
+        return call_user_func_array([self::getInstance(),$name],$args);
     }
 } 

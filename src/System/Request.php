@@ -153,4 +153,13 @@ class Request extends HttpRequest{
         }
         return false;
     }
+
+    /**
+     * @param $name
+     * @param $args
+     * @return mixed
+     */
+    public static function __callStatic($name,$args){
+        return call_user_func_array([self::getInstance(),$name],$args);
+    }
 }
