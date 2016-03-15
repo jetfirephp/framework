@@ -1,14 +1,11 @@
 <?php
 
 namespace JetFire\Framework\Factories;
+
+
 use JetFire\Framework\App;
 
-/**
- * Class Cookie
- * @package JetFire\Framework\Factories
- */
-class Cookie {
-
+class View {
     /**
      * @var
      */
@@ -19,7 +16,7 @@ class Cookie {
      */
     public function __construct(){
         if(is_null(self::$instance))
-            self::$instance = App::getInstance()->get('request')->getCookies();
+            self::$instance = App::getInstance()->get('response')->getView();
         return self::$instance;
     }
 
@@ -28,21 +25,8 @@ class Cookie {
      */
     public static function getInstance(){
         if(is_null(self::$instance))
-            self::$instance = App::getInstance()->get('request')->getCookies();
+            self::$instance = App::getInstance()->get('response')->getView();
         return self::$instance;
-    }
-
-    /**
-     * @param $name
-     * @param null $value
-     * @param int $expire
-     * @param string $path
-     * @param null $domain
-     * @param bool $secure
-     * @param bool $httpOnly
-     */
-    public static function set($name, $value = null, $expire = 0, $path = '/', $domain = null, $secure = false, $httpOnly = true){
-        App::getInstance()->get('response')->getResponse()->headers->setCookie(new \Symfony\Component\HttpFoundation\Cookie($name, $value, $expire, $path, $domain, $secure, $httpOnly));
     }
 
     /**

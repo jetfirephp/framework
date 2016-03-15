@@ -10,20 +10,6 @@ use JetFire\Template\View as TemplateView;
 class View extends TemplateView{
 
     /**
-     * @var
-     */
-    private static $instance;
-
-    /**
-     * @return View
-     */
-    public static function getInstance(){
-        if(is_null(self::$instance))
-            self::$instance = App::getInstance()->get('response')->getView();
-        return self::$instance;
-    }
-
-    /**
      * @param $path
      * @param array $data
      */
