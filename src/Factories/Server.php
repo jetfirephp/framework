@@ -21,7 +21,6 @@ class Server {
     public function __construct(){
         if(is_null(self::$instance))
             self::$instance = App::getInstance()->get('request')->getServer();
-        return self::$instance;
     }
 
     /**

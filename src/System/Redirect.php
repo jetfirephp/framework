@@ -18,7 +18,7 @@ class Redirect extends RedirectResponse{
      * @param int $status
      * @param array $headers
      */
-    public function __construct($url = '', $status = 302, $headers = array()){
+    public function __construct($url = ROOT, $status = 302, $headers = array()){
         parent::__construct($url,$status,$headers);
     }
 
@@ -49,7 +49,7 @@ class Redirect extends RedirectResponse{
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function to($to,$params = [],$code = 302){
-        $this->setTargetUrl(View::getInstance()->path($to,$params));
+        $this->setTargetUrl(App::getInstance()->get('response')->getView()->path($to,$params));
         $this->setStatusCode($code);
         return $this->send();
     }

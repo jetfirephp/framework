@@ -36,9 +36,10 @@ class DbProvider extends Provider{
         $this->ormCollection = $ormCollection;
         $params = [];
         foreach($blocks as $block){
-            $params['path'][] = (isset($block['model']))
+            $block_path = (isset($block['model']))
                 ? ($path = rtrim($block['model'],'/'))
                 : ($path = rtrim($block['path'],'/').'/Models/');
+            if(is_dir($block_path)) $params['path'][] = $block_path;
             $params['repositories'][] = (isset($block['repositories']))
                 ? ['path' => $block['repositories']['path'], 'namespace' => $block['repositories']['namespace']]
                 : ['path' => $path, 'namespace' => $block['namespace'].'\Models'];

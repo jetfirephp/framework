@@ -22,7 +22,6 @@ class Session {
     public function __construct(){
         if(is_null(self::$instance))
             self::$instance = App::getInstance()->get('request')->getSession();
-        return self::$instance;
     }
 
     /**

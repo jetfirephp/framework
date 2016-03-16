@@ -12,21 +12,6 @@ use JetFire\Http\Request as HttpRequest;
 class Request extends HttpRequest{
 
     /**
-     * @var
-     */
-    private static $instance;
-
-    /**
-     * @return Request
-     */
-    public static function getInstance(){
-        if(is_null(self::$instance)) {
-            self::$instance = new self;
-        }
-        return self::$instance;
-    }
-
-    /**
      * @return \Symfony\Component\HttpFoundation\ParameterBag
      */
     public function getAttributes()

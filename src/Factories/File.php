@@ -21,7 +21,6 @@ class File {
     public function __construct(){
         if(is_null(self::$instance))
             self::$instance = App::getInstance()->get('request')->getFiles();
-        return self::$instance;
     }
 
     /**

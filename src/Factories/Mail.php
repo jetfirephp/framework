@@ -21,7 +21,6 @@ class Mail {
     public function __construct(){
         if(is_null(self::$instance))
             self::$instance = App::getInstance()->get('mail')->getMailer();
-        return self::$instance;
     }
 
     /**

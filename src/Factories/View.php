@@ -17,7 +17,6 @@ class View {
     public function __construct(){
         if(is_null(self::$instance))
             self::$instance = App::getInstance()->get('response')->getView();
-        return self::$instance;
     }
 
     /**
