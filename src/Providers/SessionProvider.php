@@ -3,10 +3,20 @@
 namespace JetFire\Framework\Providers;
 
 
+/**
+ * Class SessionProvider
+ * @package JetFire\Framework\Providers
+ */
 class SessionProvider extends Provider{
 
+    /**
+     * @var mixed
+     */
     private $session;
 
+    /**
+     * @var array
+     */
     private $handlers = [
         'Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeSessionHandler' => 'nativeHandler',
         'Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHandler' => 'fileHandler',
@@ -15,40 +25,74 @@ class SessionProvider extends Provider{
         'Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler' => 'memcachedHandler',
     ];
 
+    /**
+     * @var array
+     */
     private $storages = [
         'Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage' => 'nativeStorage'
     ];
 
+    /**
+     * @param array $config
+     * @param $env
+     */
     public function __construct($config = [],$env){
         $handler = call_user_func_array([$this,$this->handlers[$config['handlers'][$config[$env]['handler']]['use']]],[$config['handlers'][$config[$env]['handler']]]);
         $storage =  call_user_func_array([$this,$this->storages[$config['storages'][$config[$env]['storage']]['use']]],[$config['storages'][$config[$env]['storage']],$handler]);
-        $this->session = new $config[$env]['use']($storage);
+        $this->register($config[$env]['use'],[
+            'shared' => true,
+            'construct' => [$storage]
+        ]);
+        $this->session = $this->get($config[$env]['use']);
     }
 
+    /**
+     *
+     */
     public function start(){
         $this->session->start();
     }
 
+    /**
+     * @return mixed
+     */
     public function getSession(){
         return $this->session;
     }
 
+    /**
+     * @param $config
+     * @param $handler
+     * @return mixed
+     */
     private function nativeStorage($config,$handler){
         if(isset($config['args']))
             return new $config['use']($config['args'],$handler);
         return new $config['use']([],$handler);
     }
 
+    /**
+     * @param $config
+     * @return mixed
+     */
     private function nativeHandler($config){
         return new $config['use'];
     }
 
+    /**
+     * @param $config
+     * @return mixed
+     */
     private function fileHandler($config){
         if(isset($config['args']) && isset($config['args'][0]))
             return new $config['use']($config['args'][0]);
         return new $config['use'];
     }
 
+    /**
+     * @param $config
+     * @return mixed
+     */
     private function pdoHandler($config){
         $db = $this->get('database');
         $params = $db->getParams();
@@ -66,12 +110,20 @@ class SessionProvider extends Provider{
         return new $config['use']($config['args'][0],$config['args'][1]);
     }
 
+    /**
+     * @param $config
+     * @return mixed
+     */
     private function memcacheHandler($config){
         if(!isset($config['args']) || !isset($config['args'][0]) || !isset($config['args'][1]))
             throw new \InvalidArgumentException('Arguments expected for session memcache handler.');
         return new $config['use']($this->get($config['args'][0]),$config['args'][1]);
     }
 
+    /**
+     * @param $config
+     * @return mixed
+     */
     private function memcachedHandler($config){
         if(!isset($config['args']) || !isset($config['args'][0]) || !isset($config['args'][1]))
             throw new \InvalidArgumentException('Arguments expected for session memcached handler.');

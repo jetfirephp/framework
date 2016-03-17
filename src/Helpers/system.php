@@ -267,13 +267,13 @@ if (!function_exists('escape')) {
     }
 }
 
-if (!function_exists('getDirFiles')) {
+if (!function_exists('get_dir_files')) {
 
     /**
      * @param $dir
      * @return array
      */
-    function getDirFiles($dir)
+    function get_dir_files($dir)
     {
         $files = [];
         $dir_handle = opendir($dir);

@@ -8,6 +8,14 @@ use JetFire\Framework\App;
 /**
  * Class Session
  * @package JetFire\Framework\Factory
+ * @method static take($key)
+ * @method static put($key, $value)
+ * @method static get($key, $default = null)
+ * @method static set($key, $value)
+ * @method static destroy($key = null)
+ * @method static flash($key,$value)
+ * @method static getFlash($key,$default = [])
+ * @method static allFlash()
  */
 class Session {
 
@@ -21,7 +29,7 @@ class Session {
      */
     public function __construct(){
         if(is_null(self::$instance))
-            self::$instance = App::getInstance()->get('request')->getSession();
+            self::$instance = App::getInstance()->get('session')->getSession();
     }
 
     /**
@@ -29,7 +37,7 @@ class Session {
      */
     public static function getInstance(){
         if(is_null(self::$instance))
-            self::$instance = App::getInstance()->get('request')->getSession();
+            self::$instance = App::getInstance()->get('session')->getSession();
         return self::$instance;
     }
 

@@ -5,6 +5,12 @@ namespace JetFire\Framework\Factories;
 
 use JetFire\Framework\App;
 
+/**
+ * Class View
+ * @package JetFire\Framework\Factories
+ * @method static path($path = null,$params = [])
+ * @method static render($path,$data = [])
+ */
 class View {
     /**
      * @var
