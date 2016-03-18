@@ -15,7 +15,7 @@ class View extends TemplateView{
      */
     public function render($path,$data = []){
         $app = App::getInstance();
-        $this->setPath($app->get('routing')->getRouter()->route->getDetail()['block']);
+        $this->setPath($app->get('routing')->getRouter()->route->getTarget('view_dir'));
         $this->setExtension($app->data['template_extension']);
         $this->setTemplate($path);
         $flash = $app->get('session')->getSession()->allFlash();
