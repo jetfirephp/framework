@@ -29,7 +29,7 @@ if (!function_exists('create')) {
      */
     function create($key,$params = [])
     {
-        return app()->get($key,$params);
+        return App::getInstance()->get($key,$params);
     }
 }
 
@@ -41,8 +41,8 @@ if (!function_exists('logger')) {
     function logger($name = null)
     {
         return is_null($name)
-            ? app()->get('logger')->getLogger('main')
-            : app()->get('logger')->getLogger($name);
+            ? App::getInstance()->get('logger')->getLogger('main')
+            : App::getInstance()->get('logger')->getLogger($name);
     }
 }
 
@@ -601,11 +601,11 @@ if (!function_exists('generate_token')) {
     {
         $token = md5(uniqid(rand(), true));
         $session = App::getInstance()->get('session')->getSession();
-        if (is_null($session->getFlash($name . '_token'))) {
-            $session->flash($name . '_token', $token);
-            $session->flash($name . '_token_time', time());
-        }
-        return $session->getFlash($name . '_token');
+        $session->getFlashBag()->set($name.'_token_',[
+            'key' => $token,
+            'time' => time()
+        ]);
+        return $session->getFlashBag()->peek($name.'_token_/key');
     }
 }
 
@@ -613,17 +613,19 @@ if (!function_exists('is_token')) {
 
     function is_token($time, $name = '', $referer = null)
     {
-        $session = App::getInstance()->get('session')->getSession();
-        $request = App::getInstance()->get('request');
-        if (!is_null($session->getFlash($name . '_token')) && !is_null($session->getFlash($name . '_token_time')) && $request->getPost()->get($name . '_token')) {
-            if ($session->getFlash($name . '_token') == $request->getPost()->get($name . '_token')) {
-                if ($session->getFlash($name . '_token_time') >= (time() - $time)) {
+        $app = App::getInstance();
+        $session = $app->get('session')->getSession();
+        $request = $app->get('request');
+        if ($session->getFlashBag()->has($name . '_token_') && $request->getPost()->get($name . '_token') != '') {
+            if ($session->getFlashBag()->peek($name . '_token_/key') == $request->getPost()->get($name . '_token')) {
+                if ($session->getFlashBag()->peek($name . '_token_/time') >= (time() - $time)) {
                     if (is_null($referer)) return true;
                     else if (!is_null($referer) && $request->referer() == ROOT . $referer) return true;
                 }
             }
         }
-        $session->flash('response', ['status'=>'error','message'=>'token invalid !']);
+        $session->getFlashBag()->clear();
+        $session->getFlashBag()->set('response', ['status'=>'error','message'=>'token invalid !']);
         return false;
     }
 

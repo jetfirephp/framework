@@ -2,6 +2,7 @@
 
 namespace JetFire\Framework\System;
 
+use JetFire\Framework\App;
 use JetFire\Validator\Validator;
 use JetFire\Http\Request as HttpRequest;
 
@@ -126,14 +127,15 @@ class Request extends HttpRequest{
      */
     private function isToken($time, $name = '', $referer = null)
     {
-        if (!is_null($this->session()->get($name . '_token')) && !is_null($this->session()->get($name . '_token_time')) && $this->request->get($name . '_token') != '') {
-            if ($this->session()->get($name . '_token') == $this->request->get($name . '_token')) {
-                if ($this->session()->get($name . '_token_time') >= (time() - $time)) {
-                    if (is_null($referer)) return true;
-                    else if (!is_null($referer) && $this->server->get('HTTP_REFERER') == $referer) return true;
-                    $this->session()->remove($name . '_token');
-                    $this->session()->remove($name . '_token_time');
-                }
+        $session = App::getInstance()->get('session')->getSession();
+        if (!is_null($session->getFlash($name . '_token')) && !is_null($session->get($name . '_token_time')) && $this->request->get($name . '_token') != '') {
+            if ($session->get($name . '_token') == $this->request->get($name . '_token')) {
+                /*if ($session->get($name . '_token_time') >= (time() - $time)) {*/
+                if (is_null($referer)) return true;
+                else if (!is_null($referer) && $this->server->get('HTTP_REFERER') == $referer) return true;
+                $session->remove($name . '_token');
+                $session->remove($name . '_token_time');
+                /*}*/
             }
         }
         return false;
