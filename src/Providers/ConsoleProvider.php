@@ -2,7 +2,6 @@
 
 namespace JetFire\Framework\Providers;
 
-
 use Doctrine\ORM\Tools\Console\ConsoleRunner;
 use JetFire\Db\Model;
 use Symfony\Component\Console\Application;

@@ -3,6 +3,8 @@
 use JetFire\Framework\App;
 
 //----------------------------------------------------------------
+//| App system helper                                                |
+//----------------------------------------------------------------
 
 if (!function_exists('app')) {
 
@@ -76,10 +78,23 @@ if (!function_exists('session')) {
 
     function session($key = null)
     {
-        $app = App::getInstance();
         if(is_null($key))
-            return $app->get('session')->getSession();
-        return $app->get('session')->getSession()->get($key);
+            return App::getInstance()->get('session')->getSession();
+        return App::getInstance()->get('session')->getSession()->get($key);
+    }
+
+}
+
+//----------------------------------------------------------------
+
+if (!function_exists('cache')) {
+
+
+    function cache($driver = null)
+    {
+        if(is_null($driver))
+            return App::getInstance()->get('cache')->getCache();
+        return App::getInstance()->get('cache')->getCache($driver);
     }
 
 }
@@ -110,6 +125,7 @@ if (!function_exists('abort')) {
         $routing = App::getInstance()->get('routing');
         $routing->getResponse()->setStatusCode($code);
         $routing->getRouter()->callResponse();
+        exit;
     }
 }
 
@@ -137,6 +153,86 @@ if (!function_exists('notfound')) {
     }
 
 }
+
+if (!function_exists('slugify')) {
+    /**
+     * @param $text
+     * @return mixed|string
+     */
+    function slugify($text)
+    {
+        // replace non letter or digits by -
+        $text = preg_replace('~[^\\pL\d]+~u', '-', $text);
+        // trim
+        $text = trim($text, '-');
+        // transliterate
+        $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
+        // lowercase
+        $text = strtolower($text);
+        // remove unwanted characters
+        $text = preg_replace('~[^-\w]+~', '', $text);
+        if (empty($text))
+            return 'n-a';
+        return $text;
+    }
+}
+
+if (!function_exists('get_dir_files')) {
+
+    /**
+     * @param $dir
+     * @return array
+     */
+    function get_dir_files($dir)
+    {
+        $files = [];
+        $dir_handle = opendir($dir);
+        while ($entry = readdir($dir_handle))
+            if (is_file($dir . '/' . $entry)) {
+                array_push($files, $entry);
+            }
+        closedir($dir_handle);
+        return $files;
+    }
+}
+
+
+if (!function_exists('generate_token')) {
+
+    function generate_token($name = '')
+    {
+        $token = md5(uniqid(rand(), true));
+        $session = App::getInstance()->get('session')->getSession();
+        $session->getFlashBag()->set($name.'_token_',[
+            'key' => $token,
+            'time' => time()
+        ]);
+        return $session->getFlashBag()->peek($name.'_token_/key');
+    }
+}
+
+if (!function_exists('is_token')) {
+
+    function is_token($time, $name = '', $referer = null)
+    {
+        $app = App::getInstance();
+        $session = $app->get('session')->getSession();
+        $request = $app->get('request');
+        if ($session->getFlashBag()->has($name . '_token_') && $request->getPost()->get($name . '_token') != '') {
+            if ($session->getFlashBag()->peek($name . '_token_/key') == $request->getPost()->get($name . '_token')) {
+                if ($session->getFlashBag()->peek($name . '_token_/time') >= (time() - $time)) {
+                    if (is_null($referer)) return true;
+                    else if (!is_null($referer) && $request->referer() == ROOT . $referer) return true;
+                }
+            }
+        }
+        $session->getFlashBag()->clear();
+        $session->getFlashBag()->set('response', ['status'=>'error','message'=>'token invalid !']);
+        return false;
+    }
+
+}
+
 
 //----------------------------------------------------------------
 
@@ -231,29 +327,6 @@ if (!function_exists('preg_replace_sub')) {
     }
 }
 
-if (!function_exists('slugify')) {
-    /**
-     * @param $text
-     * @return mixed|string
-     */
-    function slugify($text)
-    {
-        // replace non letter or digits by -
-        $text = preg_replace('~[^\\pL\d]+~u', '-', $text);
-        // trim
-        $text = trim($text, '-');
-        // transliterate
-        $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text);
-        // lowercase
-        $text = strtolower($text);
-        // remove unwanted characters
-        $text = preg_replace('~[^-\w]+~', '', $text);
-        if (empty($text))
-            return 'n-a';
-        return $text;
-    }
-}
-
 if (!function_exists('escape')) {
     /**
      * @param $value
@@ -267,24 +340,9 @@ if (!function_exists('escape')) {
     }
 }
 
-if (!function_exists('get_dir_files')) {
-
-    /**
-     * @param $dir
-     * @return array
-     */
-    function get_dir_files($dir)
-    {
-        $files = [];
-        $dir_handle = opendir($dir);
-        while ($entry = readdir($dir_handle))
-            if (is_file($dir . '/' . $entry)) {
-                array_push($files, $entry);
-            }
-        closedir($dir_handle);
-        return $files;
-    }
-}
+//----------------------------------------------------------------
+//| Php functions helper                                          |
+//----------------------------------------------------------------
 
 if (!function_exists('password_hash')) {
 
@@ -593,40 +651,4 @@ if (!function_exists('_strlen')) {
         }
         return $pass;
     }
-}
-
-if (!function_exists('generate_token')) {
-
-    function generate_token($name = '')
-    {
-        $token = md5(uniqid(rand(), true));
-        $session = App::getInstance()->get('session')->getSession();
-        $session->getFlashBag()->set($name.'_token_',[
-            'key' => $token,
-            'time' => time()
-        ]);
-        return $session->getFlashBag()->peek($name.'_token_/key');
-    }
-}
-
-if (!function_exists('is_token')) {
-
-    function is_token($time, $name = '', $referer = null)
-    {
-        $app = App::getInstance();
-        $session = $app->get('session')->getSession();
-        $request = $app->get('request');
-        if ($session->getFlashBag()->has($name . '_token_') && $request->getPost()->get($name . '_token') != '') {
-            if ($session->getFlashBag()->peek($name . '_token_/key') == $request->getPost()->get($name . '_token')) {
-                if ($session->getFlashBag()->peek($name . '_token_/time') >= (time() - $time)) {
-                    if (is_null($referer)) return true;
-                    else if (!is_null($referer) && $request->referer() == ROOT . $referer) return true;
-                }
-            }
-        }
-        $session->getFlashBag()->clear();
-        $session->getFlashBag()->set('response', ['status'=>'error','message'=>'token invalid !']);
-        return false;
-    }
-
 }
