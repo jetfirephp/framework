@@ -37,13 +37,10 @@ class SessionProvider extends Provider{
      * @param $env
      */
     public function __construct($config = [],$env){
-        $handler = call_user_func_array([$this,$this->handlers[$config['handlers'][$config[$env]['handler']]['use']]],[$config['handlers'][$config[$env]['handler']]]);
-        $storage =  call_user_func_array([$this,$this->storages[$config['storages'][$config[$env]['storage']]['use']]],[$config['storages'][$config[$env]['storage']],$handler]);
-        $this->register($config[$env]['use'],[
-            'shared' => true,
-            'construct' => [$storage]
-        ]);
-        $this->session = $this->get($config[$env]['use']);
+        $handler = call_user_func_array([$this,$this->handlers[$config['handlers'][$config[$env]['handler']]['class']]],[$config['handlers'][$config[$env]['handler']]]);
+        $storage =  call_user_func_array([$this,$this->storages[$config['storages'][$config[$env]['storage']]['class']]],[$config['storages'][$config[$env]['storage']],$handler]);
+        $this->session = new $config['class']($storage);
+        $this->getApp()->register($this->session);
     }
 
     /**
@@ -54,7 +51,7 @@ class SessionProvider extends Provider{
     }
 
     /**
-     * @return mixed
+     * @return \JetFire\Http\Session
      */
     public function getSession(){
         return $this->session;
@@ -67,8 +64,8 @@ class SessionProvider extends Provider{
      */
     private function nativeStorage($config,$handler){
         if(isset($config['args']))
-            return new $config['use']($config['args'],$handler);
-        return new $config['use']([],$handler);
+            return new $config['class']($config['args'],$handler);
+        return new $config['class']([],$handler);
     }
 
     /**
@@ -76,7 +73,7 @@ class SessionProvider extends Provider{
      * @return mixed
      */
     private function nativeHandler($config){
-        return new $config['use'];
+        return new $config['class'];
     }
 
     /**
@@ -85,8 +82,8 @@ class SessionProvider extends Provider{
      */
     private function fileHandler($config){
         if(isset($config['args']) && isset($config['args'][0]))
-            return new $config['use']($config['args'][0]);
-        return new $config['use'];
+            return new $config['class']($config['args'][0]);
+        return new $config['class'];
     }
 
     /**
@@ -105,9 +102,9 @@ class SessionProvider extends Provider{
                     sess_lifetime DATETIME NOT NULL,
                     sess_time VARCHAR(100)
                 )');
-            return new $config['use']($pdo, $config['args'][1]);
+            return new $config['class']($pdo, $config['args'][1]);
         }
-        return new $config['use']($config['args'][0],$config['args'][1]);
+        return new $config['class']($config['args'][0],$config['args'][1]);
     }
 
     /**
@@ -117,7 +114,7 @@ class SessionProvider extends Provider{
     private function memcacheHandler($config){
         if(!isset($config['args']) || !isset($config['args'][0]) || !isset($config['args'][1]))
             throw new \InvalidArgumentException('Arguments expected for session memcache handler.');
-        return new $config['use']($this->get($config['args'][0]),$config['args'][1]);
+        return new $config['class']($this->get($config['args'][0]),$config['args'][1]);
     }
 
     /**
@@ -127,7 +124,7 @@ class SessionProvider extends Provider{
     private function memcachedHandler($config){
         if(!isset($config['args']) || !isset($config['args'][0]) || !isset($config['args'][1]))
             throw new \InvalidArgumentException('Arguments expected for session memcached handler.');
-        return new $config['use']($this->get($config['args'][0]),$config['args'][1]);
+        return new $config['class']($this->get($config['args'][0]),$config['args'][1]);
     }
 
 

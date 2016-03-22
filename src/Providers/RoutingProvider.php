@@ -132,7 +132,8 @@ class RoutingProvider extends Provider
                     $view->setPath($dir);
                     $view->setExtension($template['engines'][$template['use']]['extension']);
                     $view->setTemplate(str_replace($dir, '', $route->getTarget('template')));
-                    $view->addData(isset($route->getPath()['data']) ? $route->getPath()['data'] : []);
+                    $data = (isset($route->getTarget()['data'])) ? $route->getTarget('data') : [];
+                    $view->addData(isset($route->getParams()['data']) ? array_merge($route->getParams()['data'],$data) : $data);
                     return $this->get('template')->getTemplate()->render($view);
                 }
             ]
