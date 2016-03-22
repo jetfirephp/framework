@@ -88,10 +88,10 @@ class RoutingProvider extends Provider
         $this->getApp()->data['template_extension'] = $extension = $template['engines'][$template['use']]['extension'];
         $this->response = $this->get($router['response']);
         $this->router = new Router($this->collection, $this->response);
+        $this->setResolver($router);
         $ext = explode('.', $extension);
         $templateExtension = array_merge(['.html', '.php', '.json', '.xml'], ['.' . end($ext), $extension]);
         $this->router->setConfig([
-            'matcher'            => $router['matcher'],
             'di'                 => function ($class) {
                 $this->register($class, ['shared' => true]);
                 return $this->get($class);
@@ -100,6 +100,18 @@ class RoutingProvider extends Provider
             'generateRoutesPath' => $router['generateRoutePath']
         ]);
         $this->router->setResponses($responses);
+    }
+
+    /**
+     * @param $router
+     */
+    private function setResolver($router){
+        if(!is_array($router['use']))$router['use'] = [$router['use']];
+        foreach($router['use'] as $matcher) {
+            $class = new $router['matcher'][$matcher]['class']($this->router);
+            $class->setResolver($router['matcher'][$matcher]['resolver']);
+            $this->router->addMatcher($class);
+        }
     }
 
     /**
