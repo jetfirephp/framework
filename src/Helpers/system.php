@@ -203,11 +203,11 @@ if (!function_exists('generate_token')) {
     {
         $token = md5(uniqid(rand(), true));
         $session = App::getInstance()->get('session')->getSession();
-        $session->getFlashBag()->set($name.'_token_',[
+        $session->set($name.'_token_',[
             'key' => $token,
             'time' => time()
         ]);
-        return $session->getFlashBag()->peek($name.'_token_/key');
+        return $token;
     }
 }
 
@@ -218,15 +218,16 @@ if (!function_exists('is_token')) {
         $app = App::getInstance();
         $session = $app->get('session')->getSession();
         $request = $app->get('request');
-        if ($session->getFlashBag()->has($name . '_token_') && $request->getPost()->get($name . '_token') != '') {
-            if ($session->getFlashBag()->peek($name . '_token_/key') == $request->getPost()->get($name . '_token')) {
-                if ($session->getFlashBag()->peek($name . '_token_/time') >= (time() - $time)) {
+        if ($session->has($name . '_token_') && $request->getPost()->get($name . '_token') != '') {
+            if ($session->get($name . '_token_/key') == $request->getPost()->get($name . '_token')) {
+                if ($session->get($name . '_token_/time') >= (time() - $time)) {
+                    $session->remove($name.'_token_');
                     if (is_null($referer)) return true;
                     else if (!is_null($referer) && $request->referer() == ROOT . $referer) return true;
                 }
             }
         }
-        $session->getFlashBag()->clear();
+        $session->remove($name.'_token_');
         $session->getFlashBag()->set('response', ['status'=>'error','message'=>'token invalid !']);
         return false;
     }

@@ -20,9 +20,7 @@ class View extends TemplateView{
         $this->setTemplate($path);
         $flash = $app->get('session')->getSession()->allFlash();
         foreach ($flash as $key => $content)
-            (!isset($content[1]))
-                ? $data[$key] = $content[0]
-                : $data[$key] = $content;
+            $data[$key] = $content;
         $this->addData($data);
         return $app->get('template')->getTemplate()->render($this);
     }

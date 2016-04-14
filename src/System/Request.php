@@ -115,8 +115,8 @@ class Request extends HttpRequest{
             if (!$this->isToken($token['time'], $token['name'], $token['referer'])) return false;
         }
         if(!is_array($value) && !is_null($value))
-            return (isset($_POST[$value]))?true:false;
-        return (isset($_POST['submit']))?true:false;
+            return ($this->request->get($value))?true:false;
+        return ($this->request->get('submit'))?true:false;
     }
 
     /**
@@ -128,16 +128,16 @@ class Request extends HttpRequest{
     private function isToken($time, $name = '', $referer = null)
     {
         $session = App::getInstance()->get('session')->getSession();
-        if (!is_null($session->getFlash($name . '_token')) && !is_null($session->get($name . '_token_time')) && $this->request->get($name . '_token') != '') {
-            if ($session->get($name . '_token') == $this->request->get($name . '_token')) {
-                /*if ($session->get($name . '_token_time') >= (time() - $time)) {*/
-                if (is_null($referer)) return true;
-                else if (!is_null($referer) && $this->server->get('HTTP_REFERER') == $referer) return true;
-                $session->remove($name . '_token');
-                $session->remove($name . '_token_time');
-                /*}*/
+        if ($session->getFlashBag()->has($name . '_token_') && $this->request->get($name . '_token') != '') {
+            if ($session->getFlashBag()->peek($name . '_token_')['key'] == $this->request->get($name . '_token')) {
+                if ($session->getFlashBag()->peek($name . '_token_')['time'] >= (time() - $time)) {
+                    if (is_null($referer)) return true;
+                    else if (!is_null($referer) && $this->request->referer() == ROOT . $referer) return true;
+                }
             }
         }
+        $session->getFlashBag()->clear();
+        $session->getFlashBag()->set('response', ['status'=>'error','message'=>'Token invalid !']);
         return false;
     }
 
