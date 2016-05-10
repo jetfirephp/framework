@@ -49,31 +49,31 @@ class SystemProvider extends Provider{
         $trace = print_r( debug_backtrace( false ), true );
 
         $content = "
-  <table>
-  <thead><th>Item</th><th>Description</th></thead>
-  <tbody>
-  <tr>
-    <th>Error</th>
-    <td><pre>$errstr</pre></td>
-  </tr>
-  <tr>
-    <th>Errno</th>
-    <td><pre>$errno</pre></td>
-  </tr>
-  <tr>
-    <th>File</th>
-    <td>$errfile</td>
-  </tr>
-  <tr>
-    <th>Line</th>
-    <td>$errline</td>
-  </tr>
-  <tr>
-    <th>Trace</th>
-    <td><pre>$trace</pre></td>
-  </tr>
-  </tbody>
-  </table>";
+              <table>
+              <thead><th>Item</th><th>Description</th></thead>
+              <tbody>
+              <tr>
+                <th>Error</th>
+                <td><pre>$errstr</pre></td>
+              </tr>
+              <tr>
+                <th>Errno</th>
+                <td><pre>$errno</pre></td>
+              </tr>
+              <tr>
+                <th>File</th>
+                <td>$errfile</td>
+              </tr>
+              <tr>
+                <th>Line</th>
+                <td>$errline</td>
+              </tr>
+              <tr>
+                <th>Trace</th>
+                <td><pre>$trace</pre></td>
+              </tr>
+              </tbody>
+              </table>";
 
         return $content;
     }

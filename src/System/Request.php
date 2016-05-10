@@ -3,6 +3,7 @@
 namespace JetFire\Framework\System;
 
 use JetFire\Framework\App;
+use JetFire\Http\Session;
 use JetFire\Validator\Validator;
 use JetFire\Http\Request as HttpRequest;
 
@@ -61,6 +62,15 @@ class Request extends HttpRequest{
     }
 
     /**
+     * @param Session $session
+     */
+    public function __construct(Session $session){
+        parent::__construct();
+        $this->setSession($session);
+    }
+
+
+    /**
      * @return array|bool
      */
     public function validate(){
@@ -94,7 +104,7 @@ class Request extends HttpRequest{
     public function filled(){
         $values = [];
         foreach ($this->request->all() as $key => $post) {
-            if ($key != 'submit' && $key != '_METHOD' && $key != '_token')
+            if (strtolower($key) != 'submit' && strtoupper($key) != '_METHOD' && strtolower($key) != '_token')
                 if ($this->has($key))
                     $values[$key] = $this->input($key);
         }
@@ -107,16 +117,28 @@ class Request extends HttpRequest{
      * @return bool
      */
     public function submit($value = null,$token = []){
-        if(is_array($value))$token = $value;
-        if(!isset($token['token'])) {
+        if($this->method() == 'POST') {
+            if (is_array($value)) $token = $value;
+            if (!$this->hasXss($token)) return false;
+            if (!is_array($value) && !is_null($value))
+                return ($this->request->get($value)) ? true : false;
+            return ($this->request->get('submit')) ? true : false;
+        }
+        return false;
+    }
+
+    /**
+     * @param array $token
+     * @return bool
+     */
+    private function hasXss($token = []){
+        if (!isset($token['token'])) {
             if (!isset($token['time'])) $token['time'] = 600;
             if (!isset($token['name'])) $token['name'] = '';
             if (!isset($token['referer'])) $token['referer'] = null;
             if (!$this->isToken($token['time'], $token['name'], $token['referer'])) return false;
         }
-        if(!is_array($value) && !is_null($value))
-            return ($this->request->get($value))?true:false;
-        return ($this->request->get('submit'))?true:false;
+        return true;
     }
 
     /**
@@ -127,17 +149,16 @@ class Request extends HttpRequest{
      */
     private function isToken($time, $name = '', $referer = null)
     {
-        $session = App::getInstance()->get('session')->getSession();
-        if ($session->getFlashBag()->has($name . '_token_') && $this->request->get($name . '_token') != '') {
-            if ($session->getFlashBag()->peek($name . '_token_')['key'] == $this->request->get($name . '_token')) {
-                if ($session->getFlashBag()->peek($name . '_token_')['time'] >= (time() - $time)) {
+        $session = $this->getSession();
+        if ($session->get($name . '_token_') && $this->request->get($name . '_token') != '') {
+            if ($session->get($name . '_token_')['key'] == $this->request->get($name . '_token')) {
+                if ($session->get($name . '_token_')['time'] >= (time() - $time)) {
+                    $session->remove($name.'_token_');
                     if (is_null($referer)) return true;
                     else if (!is_null($referer) && $this->request->referer() == ROOT . $referer) return true;
                 }
             }
         }
-        $session->getFlashBag()->clear();
-        $session->getFlashBag()->set('response', ['status'=>'error','message'=>'Token invalid !']);
         return false;
     }
 
