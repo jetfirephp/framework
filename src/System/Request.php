@@ -69,7 +69,6 @@ class Request extends HttpRequest{
         $this->setSession($session);
     }
 
-
     /**
      * @return array|bool
      */
@@ -84,10 +83,18 @@ class Request extends HttpRequest{
                 $response =  Validator::validatePost($request::rules());
         }
         if ($args == 1) {
-            if ( property_exists($request, 'messages'))
-                $response = Validator::validatePost(func_get_arg(0), $request::$messages);
-            else
-                $response = Validator::validatePost(func_get_arg(0));
+            $param = func_get_arg(0);
+            if(is_array($param)) {
+                if (property_exists($request, 'messages'))
+                    $response = Validator::validatePost($param, $request::$messages);
+                else
+                    $response = Validator::validatePost($param);
+            }else{
+                if (method_exists($request, $param) && property_exists($request, 'messages'))
+                    $response = Validator::validatePost($request::$param(), $request::$messages);
+                else if (method_exists($request, $param) && !property_exists($request, 'messages'))
+                    $response =  Validator::validatePost($request::$param());
+            }
         }
         if($args == 2)
             $response = Validator::validatePost(func_get_arg(0), func_get_arg(1));

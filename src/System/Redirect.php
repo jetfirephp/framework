@@ -60,7 +60,7 @@ class Redirect extends RedirectResponse{
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function url($url,$code = 302){
-        (substr( $url, 0, 4 ) === "http")
+        (substr( $url, 0, 4 ) !== "http")
             ? $this->setTargetUrl(App::getInstance()->get('request')->root().'/'.ltrim($url,'/'))
             : $this->setTargetUrl($url);
         $this->setStatusCode($code);

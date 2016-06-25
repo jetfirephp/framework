@@ -73,6 +73,7 @@ class RoutingProvider extends Provider
                 $options = isset($block['prefix'])
                     ? ['block' => $block['path'], 'view_dir' => $block['view_dir'], 'ctrl_namespace' => $block['namespace'] . '\Controllers', 'prefix' => $block['prefix']]
                     : ['block' => $block['path'], 'view_dir' => $block['view_dir'], 'ctrl_namespace' => $block['namespace'] . '\Controllers'];
+                if(isset($block['subdomain']))$options['subdomain'] = $block['subdomain'];
                 $this->collection->addRoutes($path, $options);
             }
         }
@@ -133,6 +134,9 @@ class RoutingProvider extends Provider
                     $view->setExtension($template['engines'][$template['use']]['extension']);
                     $view->setTemplate(str_replace($dir, '', $route->getTarget('template')));
                     $data = (isset($route->getTarget()['data'])) ? $route->getTarget('data') : [];
+                    $flash = $this->get('session')->getSession()->allFlash();
+                    foreach ($flash as $key => $content)
+                        $data[$key] = $content;
                     $view->addData(isset($route->getParams()['data']) ? array_merge($route->getParams()['data'],$data) : $data);
                     return $this->get('template')->getTemplate()->render($view);
                 }

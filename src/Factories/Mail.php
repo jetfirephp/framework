@@ -39,8 +39,8 @@ class Mail {
      * @param null $file
      */
     public static function sendTo($to,$subject,$content,$file = null){
-        $from = (isset(app()->data['app']['setting']['mail']['from']))
-            ? app()->data['app']['setting']['mail']['from']
+        $from = (isset(app()->data['app']['settings']['mail']['from']))
+            ? app()->data['app']['settings']['mail']['from']
             : 'contact@jetfire.fr';
         $message = self::getInstance()->to($to)
             ->from($from)

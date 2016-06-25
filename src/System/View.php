@@ -29,12 +29,13 @@ class View extends TemplateView{
     /**
      * @param null $path
      * @param array $params
+     * @param string $subdomain
      * @return mixed
      */
-    public function path($path = null,$params = []){
+    public function path($path = null,$params = [],$subdomain = ''){
         $app = App::getInstance();
         if(!is_null($path))
-            return $app->get('routing')->getCollection()->getRoutePath($path,$params);
+            return $app->get('routing')->getCollection()->getRoutePath($path,$params,$subdomain);
         return $app->get('request')->root();
     }
 
