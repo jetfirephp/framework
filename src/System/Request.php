@@ -73,32 +73,35 @@ class Request extends HttpRequest{
      * @return array|bool
      */
     public function validate(){
+        $validate = ($this->method() == 'GET')?'validateGet':'validatePost';
         $args = func_num_args();
         $request = get_called_class();
         $response = false;
         if($args == 0) {
             if (method_exists($request, 'rules') && property_exists($request, 'messages'))
-                $response = Validator::validatePost($request::rules(), $request::$messages);
+                $response = Validator::$validate($request::rules(), $request::$messages);
             else if (method_exists($request, 'rules') && !property_exists($request, 'messages'))
-                $response =  Validator::validatePost($request::rules());
+                $response =  Validator::$validate($request::rules());
         }
         if ($args == 1) {
             $param = func_get_arg(0);
             if(is_array($param)) {
                 if (property_exists($request, 'messages'))
-                    $response = Validator::validatePost($param, $request::$messages);
+                    $response = Validator::$validate($param, $request::$messages);
                 else
-                    $response = Validator::validatePost($param);
+                    $response = Validator::$validate($param);
             }else{
                 if (method_exists($request, $param) && property_exists($request, 'messages'))
-                    $response = Validator::validatePost($request::$param(), $request::$messages);
+                    $response = Validator::$validate($request::$param(), $request::$messages);
                 else if (method_exists($request, $param) && !property_exists($request, 'messages'))
-                    $response =  Validator::validatePost($request::$param());
+                    $response =  Validator::$validate($request::$param());
             }
         }
-        if($args == 2)
-            $response = Validator::validatePost(func_get_arg(0), func_get_arg(1));
+        if($args == 2) {
+            $response = Validator::$validate(func_get_arg(0), func_get_arg(1));
+        }
         if($response['valid']) {
+            $this->attributes->set('response_values',$response['values']);
             $this->request->add($response['values']);
             return $response['valid'];
         }
@@ -119,6 +122,14 @@ class Request extends HttpRequest{
     }
 
     /**
+     * @return array
+     */
+    public function values(){
+        return $this->attributes->get('response_values');
+    }
+
+
+    /**
      * @param null $value
      * @param array $token
      * @return bool
@@ -129,7 +140,7 @@ class Request extends HttpRequest{
             if (!$this->hasXss($token)) return false;
             if (!is_array($value) && !is_null($value))
                 return ($this->request->get($value)) ? true : false;
-            return ($this->request->get('submit')) ? true : false;
+            return ($this->request->has('submit')) ? true : false;
         }
         return false;
     }

@@ -21,10 +21,7 @@ class RoutingProvider extends Provider
      * @var RouteCollection
      */
     protected $collection;
-    /**
-     * @var ResponseInterface
-     */
-    protected $response;
+
 
     /**
      * @param RouteCollection $collection
@@ -55,7 +52,7 @@ class RoutingProvider extends Provider
      */
     public function getResponse()
     {
-        return $this->response;
+        return $this->router->response;
     }
 
     /**
@@ -87,8 +84,8 @@ class RoutingProvider extends Provider
     public function setRouter($router, $template, $responses)
     {
         $this->getApp()->data['template_extension'] = $extension = $template['engines'][$template['use']]['extension'];
-        $this->response = $this->get($router['response']);
-        $this->router = new Router($this->collection, $this->response);
+        $response = $this->get($router['response']);
+        $this->router = new Router($this->collection, $response);
         $this->setResolver($router);
         $ext = explode('.', $extension);
         $templateExtension = array_merge(['.html', '.php', '.json', '.xml'], ['.' . end($ext), $extension]);

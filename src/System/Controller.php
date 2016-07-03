@@ -26,8 +26,9 @@ class Controller {
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function json($data){
-        $response = new JsonResponse($data);
-        return $response->send();
+        $response = App::getInstance()->get('routing')->getResponse();
+        $response->setContent(json_encode($data));
+        $response->headers->set('Content-Type', 'application/json');
     }
 
     /**
@@ -46,7 +47,7 @@ class Controller {
      * @return mixed
      */
     public function response(){
-        return App::getInstance()->get('response');
+        return App::getInstance()->get('routing')->getResponse();
     }
 
 

@@ -41,7 +41,7 @@ class Cookie {
      * @param bool $httpOnly
      */
     public static function set($name, $value = null, $expire = 0, $path = '/', $domain = null, $secure = false, $httpOnly = true){
-        App::getInstance()->get('response')->getResponse()->headers->setCookie(new \Symfony\Component\HttpFoundation\Cookie($name, $value, $expire, $path, $domain, $secure, $httpOnly));
+        App::getInstance()->get('routing')->getResponse()->headers->setCookie(new \Symfony\Component\HttpFoundation\Cookie($name, $value, $expire, $path, $domain, $secure, $httpOnly));
     }
 
     /**
