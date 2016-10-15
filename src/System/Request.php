@@ -3,6 +3,7 @@
 namespace JetFire\Framework\System;
 
 use JetFire\Framework\App;
+use JetFire\Framework\Providers\RoutingProvider;
 use JetFire\Http\Session;
 use JetFire\Validator\Validator;
 use JetFire\Http\Request as HttpRequest;
@@ -63,10 +64,19 @@ class Request extends HttpRequest{
 
     /**
      * @param Session $session
+     * @param RoutingProvider $routing
      */
-    public function __construct(Session $session){
+    public function __construct(Session $session,RoutingProvider $routing){
         parent::__construct();
         $this->setSession($session);
+        $this->attributes->set('routing',$routing->getRouter());
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRoute(){
+        return $this->attributes->get('routing')->route;
     }
 
     /**

@@ -2,8 +2,10 @@
 
 namespace JetFire\Framework\Providers;
 
+use JetFire\Db\Doctrine\DoctrineConstructor;
 use JetFire\Db\Model;
-use JetFire\Db\RedBean\RedBeanModel;
+use JetFire\Db\Pdo\PdoConstructor;
+use JetFire\Db\RedBean\RedBeanConstructor;
 
 /**
  * Class DbProvider
@@ -50,31 +52,34 @@ class DbProvider extends Provider{
         foreach ($ormCollection['use'] as $key)
             $this->providers[$key] =  function()use($key,$ormCollection){
                 $orm = (is_array($ormCollection['drivers'][$key]))?$ormCollection['drivers'][$key]['class']:$ormCollection['drivers'][$key];
+                $options = $this->setConfiguration($key);
                 $this->register($orm,[
                     'shared' => true,
-                    'construct' => [$this->db]
+                    'construct' => [array_merge($this->db,$options)]
                 ]);
                 return $this->get($orm);
             };
+
     }
 
-
-    /**
-     * @param $env
-     */
-    public function setCache($env){
-        if($env == 'prod') {
-            if (isset($this->providers['doctrine']))
-                $this->getProvider('doctrine')->setCache($this->get('cache')->getCache($this->ormCollection['drivers']['doctrine']['cache']));
-            if (isset($this->providers['redbean']))
-                $this->getProvider('redbean')->setCache();
+    public function setConfiguration($orm){
+        switch($orm){
+            case 'doctrine':
+                return [
+                    'cache' => $this->get('cache')->getCache($this->ormCollection['drivers']['doctrine']['cache']),
+                    'functions' => $this->ormCollection['drivers']['doctrine']['functions']
+                ];
+                break;
         }
+        return [];
     }
+
 
     /**
      * @param array $default
      */
     public function provide($default = []){
+
         Model::provide($this->providers,$default);
     }
 
@@ -87,7 +92,7 @@ class DbProvider extends Provider{
 
     /**
      * @param $key
-     * @return mixed
+     * @return DoctrineConstructor | RedBeanConstructor | PdoConstructor
      */
     public function getProvider($key){
         return call_user_func($this->providers[$key]);

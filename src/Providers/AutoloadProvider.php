@@ -11,8 +11,10 @@ class AutoloadProvider extends Provider{
 
     public function __construct(Autoload $loader,$loads = []){
         $this->loader = $loader;
-        $this->loader->setNamespaces($loads['namespaces']);
-        $this->loader->setClassCollection($loads['classes']);
+        foreach ($loads['namespaces'] as $prefix => $namespace)
+            $this->loader->addNamespace($prefix,ROOT . DIRECTORY_SEPARATOR . ltrim($namespace,'/'));
+        foreach ($loads['classes'] as $class => $path)
+            $this->loader->addClass($class,ROOT. DIRECTORY_SEPARATOR . ltrim($path,'/'));
         $this->loader->register();
     }
 

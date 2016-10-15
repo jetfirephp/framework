@@ -26,9 +26,9 @@ class CronProvider extends Provider{
         $this->jobby = $jobby;
         foreach($cron as $name => $job){
             if(isset($job['controller']))
-                $this->jobby['closure'] = $this->getClosure($job);
+                $job['closure'] = $this->getClosure($job);
             elseif(isset($job['file']))
-                $this->jobby['closure'] = function()use($job){require $job['file'];};
+                $job['closure'] = function()use($job){require $job['file'];};
             if(!isset($job['output']))
                 $job['output'] = ROOT.'/storage/cron/command.log';
             $this->jobby->add($name,$job);
@@ -49,7 +49,10 @@ class CronProvider extends Provider{
     private function getClosure($job){
         $collection = new RouteCollection();
         $collection->addRoutes([
-            '/' => $job['controller']
+            '/' => [
+                'use' => $job['controller'],
+                'ajax' => (isset($job['ajax']) && $job['ajax'])?true:false
+            ]
         ],[
             'path' => ROOT.'/Views',
             'namespace' => '',
@@ -57,7 +60,7 @@ class CronProvider extends Provider{
         $router = new Router($collection);
         $router->setUrl('/');
         $router->match();
-        return function()use($router){
+        return function() use ($router){
             $router->callTarget();
             $router->response->sendContent();
         };

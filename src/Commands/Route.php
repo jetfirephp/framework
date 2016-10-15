@@ -58,7 +58,7 @@ class Route extends Command{
         $collection = App::getInstance()->get('routing')->getCollection();
         $tab = $table = [];
         foreach(['url','callback','name','method'] as $value)
-            $table[$value] = (in_array($value,strtolower($cells))) ? true : false;
+            $table[$value] = (in_array(ucfirst($value),$cells)) ? true : false;
         for($i = 0;$i < $collection->countRoutes;++$i){
             if($i > 0)$tab[] =  new TableSeparator();
             $tab[] = [new TableCell('<fg=green>Block path : '.$collection->getRoutes()['block_'.$i].'</>', array('colspan' => count($cells)))];

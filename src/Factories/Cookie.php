@@ -46,6 +46,13 @@ class Cookie {
 
     /**
      * @param $name
+     */
+    public static function destroy($name){
+        App::getInstance()->get('routing')->getResponse()->headers->clearCookie($name);
+    }
+
+    /**
+     * @param $name
      * @param $args
      * @return mixed
      */

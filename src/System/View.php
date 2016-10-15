@@ -17,7 +17,9 @@ class View extends TemplateView{
         $app = App::getInstance();
         $this->setPath($app->get('routing')->getRouter()->route->getTarget('view_dir'));
         $this->setExtension($app->data['template_extension']);
-        $this->setTemplate($path);
+        (!is_array($path) && is_file($app->get('routing')->getRouter()->route->getTarget('view_dir').$path.$app->data['template_extension']))
+            ? $this->setTemplate($path)
+            : $this->setContent($path);
         $flash = $app->get('session')->getSession()->allFlash();
         foreach ($flash as $key => $content)
             $data[$key] = $content;
