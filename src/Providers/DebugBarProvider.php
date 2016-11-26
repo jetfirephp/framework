@@ -2,10 +2,10 @@
 
 namespace JetFire\Framework\Providers;
 
+use DebugBar\Bridge\DoctrineCollector;
 use DebugBar\Bridge\Twig\TwigCollector;
-use DebugBar\Bridge\Twig\TwigProfilerDumperArray;
+use DebugBar\Bridge\Twig\TwigProfilerDumperHtml;
 use DebugBar\StandardDebugBar;
-use Twig_Extension_Profiler;
 use Twig_Profiler_Profile;
 
 /**
@@ -14,14 +14,19 @@ use Twig_Profiler_Profile;
  */
 class DebugBarProvider extends Provider{
 
+    /**
+     * @var StandardDebugBar
+     */
     private $debugBar;
+    /**
+     * @var \DebugBar\JavascriptRenderer
+     */
     private $debugBarRenderer;
 
-    private $collectors = [
-        'twig' => 'loadTwigDebugger',
-        'doctrine' => 'loadDoctrineDebugger',
-    ];
-
+    /**
+     * DebugBarProvider constructor.
+     * @param StandardDebugBar $debugBar
+     */
     public function __construct(StandardDebugBar $debugBar){
         $this->debugBar = $debugBar;
         $this->debugBarRenderer = $debugBar->getJavascriptRenderer();
@@ -59,25 +64,28 @@ class DebugBarProvider extends Provider{
         $this->debugBarRenderer = $debugBarRenderer;
     }
 
+    /**
+     * @param $value
+     */
     public function debug($value){
         $this->debugBar["messages"]->addMessage($value);
     }
 
-    public function loadCollectors($collectors = []){
-        foreach ($collectors as $collector) {
-            call_user_func([$this, $this->collectors[$collector]]);
-        }
-    }
-
-    public function loadTwigDebugger(){
-        $dumper = new TwigProfilerDumperArray();
-        $profiler = new Twig_Profiler_Profile();
-        $this->get('template')->getTemplate()->addExtension(new Twig_Extension_Profiler($profiler));
+    /**
+     * @param TwigProfilerDumperHtml $dumper
+     * @param Twig_Profiler_Profile $profiler
+     * @throws \DebugBar\DebugBarException
+     */
+    public function loadTwigDebugger(TwigProfilerDumperHtml $dumper, Twig_Profiler_Profile $profiler){
         $this->debugBar->addCollector(new TwigCollector($dumper,$profiler));
     }
 
-    public function loadDoctrineDebugger(){
-
+    /**
+     * @param $debug_stack
+     * @throws \DebugBar\DebugBarException
+     */
+    public function loadDoctrineDebugger($debug_stack){
+        $this->debugBar->addCollector(new DoctrineCollector($debug_stack));
     }
 
 } 

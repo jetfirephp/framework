@@ -3,7 +3,7 @@
 use JetFire\Framework\App;
 
 //----------------------------------------------------------------
-//| App system helper                                                |
+//| App system helper                                             |
 //----------------------------------------------------------------
 
 if (!function_exists('app')) {
@@ -19,6 +19,25 @@ if (!function_exists('app')) {
             : App::getInstance();
     }
 }
+
+
+//----------------------------------------------------------------
+//| App debugger                                                 |
+//----------------------------------------------------------------
+
+
+if (!function_exists('debug')) {
+
+    /**
+     * @param $value
+     * @return mixed
+     */
+    function debug($value)
+    {
+        App::getInstance()->get('debug_toolbar')->debug($value);
+    }
+}
+
 
 //----------------------------------------------------------------
 

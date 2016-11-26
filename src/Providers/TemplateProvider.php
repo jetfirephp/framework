@@ -1,6 +1,9 @@
 <?php
 
 namespace JetFire\Framework\Providers;
+use DebugBar\Bridge\Twig\TwigProfilerDumperHtml;
+use Twig_Extension_Profiler;
+use Twig_Profiler_Profile;
 
 /**
  * Class TemplateProvider
@@ -18,12 +21,24 @@ class TemplateProvider extends Provider{
     protected $config;
 
     /**
+     * @var
+     */
+    private $env;
+
+    /**
+     * @var mixed
+     */
+    private $engine;
+
+    /**
      * @param $template
      * @param $env
      */
     public function __construct($template = [],$env){
+        $this->engine = $template['use'];
         $this->config = $template['engines'][$template['use']];
-        if($env == 'dev'){
+        $this->env = $env;
+        if($this->env == 'dev'){
             $this->config['cache'] = false;
             $this->config['debug'] = true;
         }else
@@ -65,4 +80,20 @@ class TemplateProvider extends Provider{
             $this->getTemplate()->addExtension($this->get($extension));
     }
 
+
+    /**
+     * @param bool $enable
+     */
+    public function setDebugBar($enable = true){
+        if($this->env == 'dev' && $enable){
+            switch ($this->engine){
+                case 'twig':
+                    $dumper = new TwigProfilerDumperHtml();
+                    $profiler = new Twig_Profiler_Profile();
+                    $this->getTemplate()->addExtension(new Twig_Extension_Profiler($profiler));
+                    $this->get('debug_toolbar')->loadTwigDebugger($dumper,$profiler);
+                    break;
+            }
+        }
+    }
 } 

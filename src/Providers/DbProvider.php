@@ -2,6 +2,7 @@
 
 namespace JetFire\Framework\Providers;
 
+use Doctrine\DBAL\Logging\DebugStack;
 use JetFire\Db\Doctrine\DoctrineConstructor;
 use JetFire\Db\Model;
 use JetFire\Db\Pdo\PdoConstructor;
@@ -22,6 +23,10 @@ class DbProvider extends Provider{
      * @var
      */
     private $db;
+    /**
+     * @var string
+     */
+    private $env;
 
     /**
      * @var
@@ -34,8 +39,9 @@ class DbProvider extends Provider{
      * @param $blocks
      * @param string $env
      */
-    public function __construct($ormCollection,$db,$blocks,$env){
+    public function __construct($ormCollection, $db, $blocks, $env){
         $this->ormCollection = $ormCollection;
+        $this->env = $env;
         $params = [];
         foreach($blocks as $block){
             $block_path = (isset($block['model']))
@@ -62,6 +68,10 @@ class DbProvider extends Provider{
 
     }
 
+    /**
+     * @param $orm
+     * @return array
+     */
     public function setConfiguration($orm){
         switch($orm){
             case 'doctrine':
@@ -106,6 +116,17 @@ class DbProvider extends Provider{
         return (isset($this->db[$key]))
             ? $this->db[$key]
             : $this->db;
+    }
+
+    /**
+     * @param bool $enable
+     */
+    public function setDebugBar($enable = true){
+        if($this->env == 'dev' && $enable){
+            $debugStack = new DebugStack();
+            Model::orm('doctrine')->getOrm()->getConnection()->getConfiguration()->setSQLLogger($debugStack);
+            $this->get('debug_toolbar')->loadDoctrineDebugger($debugStack);
+        }
     }
 
 } 
