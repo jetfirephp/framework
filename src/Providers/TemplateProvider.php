@@ -47,7 +47,14 @@ class TemplateProvider extends Provider{
      * @return mixed
      */
     public function getEngine(){
-        return $this->get($this->template)->getTemplate('engine');
+        return $this->getTemplate()->getTemplate('engine');
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLoader(){
+        return $this->getTemplate()->getTemplate('loader');
     }
 
     /**

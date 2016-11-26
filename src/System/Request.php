@@ -110,10 +110,10 @@ class Request extends HttpRequest{
         if($args == 2) {
             $response = Validator::$validate(func_get_arg(0), func_get_arg(1));
         }
-        if($response['valid']) {
+        if($response['valid'] === true) {
             $this->attributes->set('response_values',$response['values']);
             $this->request->add($response['values']);
-            return $response['valid'];
+            return true;
         }
         return $response;
     }
@@ -145,7 +145,7 @@ class Request extends HttpRequest{
      * @return bool
      */
     public function submit($value = null,$token = []){
-        if($this->method() == 'POST') {
+        if($this->method() != 'GET') {
             if (is_array($value)) $token = $value;
             if (!$this->hasXss($token)) return false;
             if (!is_array($value) && !is_null($value))
