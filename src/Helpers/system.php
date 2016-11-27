@@ -32,9 +32,11 @@ if (!function_exists('debug')) {
      * @param $value
      * @return mixed
      */
-    function debug($value)
+    function debug($value = null)
     {
-        App::getInstance()->get('debug_toolbar')->debug($value);
+        return(is_null($value))
+            ? App::getInstance()->get('debug_toolbar')
+            : App::getInstance()->get('debug_toolbar')->debug($value);
     }
 }
 

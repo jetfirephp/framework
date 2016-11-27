@@ -72,6 +72,13 @@ class DebugBarProvider extends Provider{
     }
 
     /**
+     * @return \DebugBar\DataCollector\DataCollectorInterface|mixed
+     */
+    public function messages(){
+        return $this->debugBar["messages"];
+    }
+
+    /**
      * @param TwigProfilerDumperHtml $dumper
      * @param Twig_Profiler_Profile $profiler
      * @throws \DebugBar\DebugBarException
