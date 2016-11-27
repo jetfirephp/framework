@@ -101,14 +101,17 @@ class LogProvider extends Provider{
      * @param $handler
      */
     private function setupHandler($id,$handler){
-        if(method_exists($this,$this->callHandlerMethod[$this->config['handlers'][$handler]['class']]))
-            $this->setup[$id]['handlers'][$handler] = call_user_func_array([$this, $this->callHandlerMethod[$this->config['handlers'][$handler]['class']]], [$this->config['handlers'][$handler]]);
+        $params = $this->config['handlers'][$handler];
+        if(method_exists($this,$this->callHandlerMethod[$params['class']]))
+            $this->setup[$id]['handlers'][$handler] = call_user_func_array([$this, $this->callHandlerMethod[$params['class']]], [$params]);
         else{
-            $this->register($this->config['handlers'][$handler]['class'],[
+            $this->register($params['class'],[
                 'shared' => true,
             ]);
-            $this->setup[$id]['handlers'][$handler] = $this->get($this->config['handlers'][$handler]['class']);
+            $this->setup[$id]['handlers'][$handler] = $this->get($params['class']);
         }
+        if(isset($params['formatter']))
+            $this->setup[$id]['handlers'][$handler]->setFormatter($this->getFormatter($this->config['formatters'][$params['formatter']]));
     }
 
     /**
@@ -154,10 +157,7 @@ class LogProvider extends Provider{
                 $this->level[$params['level']]
             ]
         ]);
-        $handler = $this->get($params['class']);
-        if(isset($params['formatter']))
-            $handler->setFormatter($this->getFormatter($this->config['formatters'][$params['formatter']]));
-        return $handler;
+        return $this->get($params['class']);
     }
 
     /**

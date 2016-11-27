@@ -159,7 +159,7 @@ class Request extends HttpRequest{
      * @param array $token
      * @return bool
      */
-    private function hasXss($token = []){
+    public function hasXss($token = []){
         if (!isset($token['token'])) {
             if (!isset($token['time'])) $token['time'] = 600;
             if (!isset($token['name'])) $token['name'] = '';
