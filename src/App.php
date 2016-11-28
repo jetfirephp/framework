@@ -50,6 +50,7 @@ class App extends Di{
         foreach($this->config['include_files'] as $key => $file)
             if (file_exists($file))$this->data[$key] = include $file;
         $this->addRules($this->config['providers'],$this->data);
+        $this->addInstance(App::class,$this);
     }
 
     /**

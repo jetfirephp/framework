@@ -3,7 +3,6 @@
 namespace JetFire\Framework\System;
 
 use JetFire\Framework\App;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Class Controller
@@ -13,20 +12,34 @@ class Controller {
 
 
     /**
+     * @var App
+     */
+    private $app;
+
+    /**
+     * Controller constructor.
+     * @param App $app
+     */
+    public function __construct(App $app)
+    {
+        $this->app = $app;
+    }
+
+    /**
      * @param $path
      * @param array $data
      * @return mixed
      */
     public function render($path,$data = []){
-        return App::getInstance()->get('response')->getView()->render($path,$data);
+        return $this->app->get('response')->getView()->render($path,$data);
     }
 
     /**
      * @param $data
-     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function json($data){
-        $response = App::getInstance()->get('routing')->getResponse();
+        /** @var Response $response */
+        $response = $this->app->get('routing')->getResponse();
         $response->setContent(json_encode($data));
         $response->headers->set('Content-Type', 'application/json');
     }
@@ -39,15 +52,15 @@ class Controller {
      */
     public function redirect($to = null,$params = [],$code = 302){
         if (is_null($to))
-            return App::getInstance()->get('response')->getRedirect();
-        return App::getInstance()->get('response')->getRedirect()->to($to,$params,$code);
+            return $this->app->get('response')->getRedirect();
+        return $this->app->get('response')->getRedirect()->to($to,$params,$code);
     }
 
     /**
      * @return mixed
      */
     public function response(){
-        return App::getInstance()->get('routing')->getResponse();
+        return $this->app->get('routing')->getResponse();
     }
 
 
