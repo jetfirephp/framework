@@ -2,6 +2,7 @@
 
 namespace JetFire\Framework\Providers;
 use DebugBar\Bridge\Twig\TwigProfilerDumperHtml;
+use JetFire\Framework\App;
 use Twig_Extension_Profiler;
 use Twig_Profiler_Profile;
 
@@ -19,7 +20,6 @@ class TemplateProvider extends Provider{
      * @var mixed
      */
     protected $config;
-
     /**
      * @var
      */
@@ -31,10 +31,12 @@ class TemplateProvider extends Provider{
     private $engine;
 
     /**
-     * @param $template
+     * @param App $app
+     * @param array $template
      * @param $env
      */
-    public function __construct($template = [],$env){
+    public function __construct(App $app, $template = [],$env){
+        parent::__construct($app);
         $this->engine = $template['use'];
         $this->config = $template['engines'][$template['use']];
         $this->env = $env;
@@ -43,7 +45,7 @@ class TemplateProvider extends Provider{
             $this->config['debug'] = true;
         }else
             $this->config['debug'] = false;
-        $this->register($this->config['class'],[
+        $this->app->addRule($this->config['class'],[
             'shared' => true,
             'construct' => [$this->config],
         ]);
@@ -55,7 +57,7 @@ class TemplateProvider extends Provider{
      */
     public function getTemplate()
     {
-        return $this->get($this->template);
+        return $this->app->get($this->template);
     }
 
     /**
@@ -77,7 +79,7 @@ class TemplateProvider extends Provider{
      */
     public function setExtensions(){
         foreach($this->config['functions'] as $extension)
-            $this->getTemplate()->addExtension($this->get($extension));
+            $this->getTemplate()->addExtension($this->app->get($extension));
     }
 
 
@@ -91,7 +93,7 @@ class TemplateProvider extends Provider{
                     $dumper = new TwigProfilerDumperHtml();
                     $profiler = new Twig_Profiler_Profile();
                     $this->getTemplate()->addExtension(new Twig_Extension_Profiler($profiler));
-                    $this->get('debug_toolbar')->loadTwigDebugger($dumper,$profiler);
+                    $this->app->get('debug_toolbar')->loadTwigDebugger($dumper,$profiler);
                     break;
             }
         }

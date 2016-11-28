@@ -1,6 +1,7 @@
 <?php
 
 namespace JetFire\Framework\Providers;
+use JetFire\Framework\App;
 
 
 /**
@@ -33,14 +34,16 @@ class SessionProvider extends Provider{
     ];
 
     /**
+     * @param App $app
      * @param array $config
      * @param $env
      */
-    public function __construct($config = [],$env){
+    public function __construct(App $app, $config = [],$env){
+        parent::__construct($app);
         $handler = call_user_func_array([$this,$this->handlers[$config['handlers'][$config[$env]['handler']]['class']]],[$config['handlers'][$config[$env]['handler']]]);
         $storage =  call_user_func_array([$this,$this->storages[$config['storages'][$config[$env]['storage']]['class']]],[$config['storages'][$config[$env]['storage']],$handler]);
         $this->session = new $config['class']($storage);
-        $this->getApp()->register($this->session);
+        $this->app->register($this->session);
     }
 
     /**
@@ -91,7 +94,7 @@ class SessionProvider extends Provider{
      * @return mixed
      */
     private function pdoHandler($config){
-        $db = $this->get('database');
+        $db = $this->app->get('database');
         $params = $db->getParams();
         $config['args'][1]['db_table'] = isset($params['prefix'])?$params['prefix'].$config['args'][1]['db_table']:$config['args'][1]['db_table'];
         if(isset($db->getProviders()['pdo'])) {
@@ -114,7 +117,7 @@ class SessionProvider extends Provider{
     private function memcacheHandler($config){
         if(!isset($config['args']) || !isset($config['args'][0]) || !isset($config['args'][1]))
             throw new \InvalidArgumentException('Arguments expected for session memcache handler.');
-        return new $config['class']($this->get($config['args'][0]),$config['args'][1]);
+        return new $config['class']($this->app->get($config['args'][0]),$config['args'][1]);
     }
 
     /**
@@ -124,7 +127,7 @@ class SessionProvider extends Provider{
     private function memcachedHandler($config){
         if(!isset($config['args']) || !isset($config['args'][0]) || !isset($config['args'][1]))
             throw new \InvalidArgumentException('Arguments expected for session memcached handler.');
-        return new $config['class']($this->get($config['args'][0]),$config['args'][1]);
+        return new $config['class']($this->app->get($config['args'][0]),$config['args'][1]);
     }
 
 

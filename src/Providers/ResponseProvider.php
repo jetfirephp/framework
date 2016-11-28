@@ -26,7 +26,7 @@ class ResponseProvider extends Provider{
      * @param $response
      */
     public function setResponseClass($response){
-        $this->register($response,[
+        $this->app->addRule($response,[
             'shared' => true,
         ]);
         $this->response = $response;
@@ -36,14 +36,14 @@ class ResponseProvider extends Provider{
      * @return mixed
      */
     public function getResponse(){
-        return $this->get($this->response);
+        return $this->app->get($this->response);
     }
 
     /**
      * @param $redirect
      */
     public function setRedirectClass($redirect){
-        $this->register($redirect,[
+        $this->app->addRule($redirect,[
             'shared' => true,
         ]);
         $this->redirect = $redirect;
@@ -53,7 +53,7 @@ class ResponseProvider extends Provider{
      * @return mixed
      */
     public function getRedirect(){
-        return $this->get($this->redirect);
+        return $this->app->get($this->redirect);
     }
 
 
@@ -61,7 +61,7 @@ class ResponseProvider extends Provider{
      * @param $view
      */
     public function setViewClass($view){
-        $this->register($view,[
+        $this->app->addRule($view,[
             'shared' => true,
         ]);
         $this->view = $view;
@@ -71,7 +71,7 @@ class ResponseProvider extends Provider{
      * @return mixed
      */
     public function getView(){
-        return $this->get($this->view);
+        return $this->app->get($this->view);
     }
 
 } 

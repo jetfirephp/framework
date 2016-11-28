@@ -4,11 +4,25 @@ namespace JetFire\Framework\Providers;
 
 
 use InvalidArgumentException;
+use JetFire\Framework\App;
 
+/**
+ * Class CacheProvider
+ * @package JetFire\Framework\Providers
+ */
 class CacheProvider extends Provider{
 
+    /**
+     * @var array
+     */
     private $config;
+    /**
+     * @var mixed
+     */
     private $cache;
+    /**
+     * @var array
+     */
     private $cacheDrivers = [
         'Doctrine\Common\Cache\ArrayCache' => 'getCache',
         'Doctrine\Common\Cache\ApcCache' => 'getCache',
@@ -19,80 +33,107 @@ class CacheProvider extends Provider{
         'Doctrine\Common\Cache\RedisCache' => 'getRedis',
     ];
 
-    public function __construct($config = [],$env){
+    /**
+     * CacheProvider constructor.
+     * @param App $app
+     * @param array $config
+     * @param $env
+     */
+    public function __construct(App $app, $config = [], $env){
+        parent::__construct($app);
         $this->config = $config;
         $this->cache = call_user_func_array([$this,$this->cacheDrivers[$config['drivers'][$config[$env]]['class']]],[$config['drivers'][$config[$env]]]);
-        $this->addAlias($config[$env],$config['drivers'][$config[$env]]['class']);
+        $this->app->addAlias($config[$env],$config['drivers'][$config[$env]]['class']);
     }
 
+    /**
+     * @param null $key
+     * @return mixed
+     */
     public function getCache($key = null){
         if(is_null($key))
             return $this->cache;
         return call_user_func_array([$this,$this->cacheDrivers[$this->config['drivers'][$key]['class']]],[$this->config['drivers'][$key]]);
     }
 
+    /**
+     * @param $driver
+     * @return mixed
+     */
     private function getFileCache($driver){
         if(!isset($driver['args'][0]) || !isset($driver['args'][1]))
             throw new InvalidArgumentException('Arguments for memcache driver missing');
-        $this->register($driver['class'],[
+        $this->app->addRule($driver['class'],[
             'shared' => true,
             'construct' => [$driver['args'][0],$driver['args'][1]]
         ]);
-        return $this->get($driver['class']);
+        return $this->app->get($driver['class']);
     }
 
+    /**
+     * @param $driver
+     * @return mixed
+     */
     private function getMemcache($driver){
         if(!isset($driver['args'][0]) || !isset($driver['args'][1]))
             throw new InvalidArgumentException('Arguments for memcache driver missing');
-        $this->register('Memcache',[
+        $this->app->addRule('Memcache',[
             'shared' => true ,
             'call' => [
                 'connect' => [$driver['args'][0],$driver['args'][1]]
             ]
         ]);
-        $this->register($driver['class'],[
+        $this->app->addRule($driver['class'],[
             'shared' => true,
             'call' => [
-                'setMemcache' => [$this->get('Memcache')]
+                'setMemcache' => [$this->app->get('Memcache')]
             ],
         ]);
-        return $this->get($driver['class']);
+        return $this->app->get($driver['class']);
     }
 
+    /**
+     * @param $driver
+     * @return mixed
+     */
     private function getMemcached($driver){
         if(!isset($driver['args'][0]) || !isset($driver['args'][1]))
             throw new InvalidArgumentException('Arguments for memcached driver missing');
-        $this->register('Memcached',[
+        $this->app->addRule('Memcached',[
             'shared' => true ,
             'call' => [
                 'connect' => [$driver['args'][0],$driver['args'][1]]
             ]
         ]);
-        $this->register($driver['class'],[
+        $this->app->addRule($driver['class'],[
             'shared' => true,
             'call' => [
-                'setMemcached' => [$this->get('Memcached')]
+                'setMemcached' => [$this->app->get('Memcached')]
             ],
         ]);
-        return $this->get($driver['class']);
+        return $this->app->get($driver['class']);
     }
 
+    /**
+     * @param $driver
+     * @return mixed
+     */
     private function getRedis($driver){
         if(!isset($driver['args'][0]) || !isset($driver['args'][1]))
             throw new InvalidArgumentException('Arguments for redis driver missing');
-        $this->register('Redis',[
+        $this->app->addRule('Redis',[
             'shared' => true ,
             'call' => [
                 'connect' => [$driver['args'][0],$driver['args'][1]]
             ]
         ]);
-        $this->register($driver['class'],[
+        $this->app->addRule($driver['class'],[
             'shared' => true,
             'call' => [
-                'setRedis' => [$this->get('Redis')]
+                'setRedis' => [$this->app->get('Redis')]
             ],
         ]);
-        return $this->get($driver['class']);
+        return $this->app->get($driver['class']);
     }
 
 } 

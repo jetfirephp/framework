@@ -18,7 +18,6 @@ class App extends Di{
      * @var array
      */
     private $config = [];
-
     /**
      * @var array
      */
@@ -45,12 +44,12 @@ class App extends Di{
      */
     public function load($config = []){
         $this->config = $config;
+        $this->instances[App::class] = $this;
         foreach($this->config['required_files'] as $file)
             if (file_exists($file)) require $file;
         foreach($this->config['include_files'] as $key => $file)
             if (file_exists($file))$this->data[$key] = include $file;
         $this->addRules($this->config['providers'],$this->data);
-        $this->addInstance(App::class,$this);
     }
 
     /**

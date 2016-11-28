@@ -10,21 +10,34 @@ use JetFire\Template\View as TemplateView;
 class View extends TemplateView{
 
     /**
+     * @var App
+     */
+    private $app;
+
+    /**
+     * View constructor.
+     * @param App $app
+     */
+    public function __construct(App $app)
+    {
+        $this->app = $app;
+    }
+
+    /**
      * @param $path
      * @param array $data
      */
     public function render($path,$data = []){
-        $app = App::getInstance();
-        $this->setPath($app->get('routing')->getRouter()->route->getTarget('view_dir'));
-        $this->setExtension($app->data['template_extension']);
-        (!is_array($path) && is_file($app->get('routing')->getRouter()->route->getTarget('view_dir').$path.$app->data['template_extension']))
+        $this->setPath($this->app->get('routing')->getRouter()->route->getTarget('view_dir'));
+        $this->setExtension($this->app->data['template_extension']);
+        (!is_array($path) && is_file($this->app->get('routing')->getRouter()->route->getTarget('view_dir').$path.$this->app->data['template_extension']))
             ? $this->setTemplate($path)
             : $this->setContent($path);
-        $flash = $app->get('session')->getSession()->allFlash();
+        $flash = $this->app->get('session')->getSession()->allFlash();
         foreach ($flash as $key => $content)
             $data[$key] = $content;
         $this->addData($data);
-        return $app->get('template')->getTemplate()->render($this);
+        return $this->app->get('template')->getTemplate()->render($this);
     }
 
 
@@ -35,10 +48,9 @@ class View extends TemplateView{
      * @return mixed
      */
     public function path($path = null,$params = [],$subdomain = ''){
-        $app = App::getInstance();
         if(!is_null($path))
-            return $app->get('routing')->getCollection()->getRoutePath($path,$params,$subdomain);
-        return $app->get('request')->root();
+            return $this->app->get('routing')->getCollection()->getRoutePath($path,$params,$subdomain);
+        return $this->app->get('request')->root();
     }
 
 } 

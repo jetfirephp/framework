@@ -3,6 +3,7 @@
 namespace JetFire\Framework\System;
 
 use JetFire\Framework\App;
+use JetFire\Http\Session;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -12,13 +13,19 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
  */
 class Redirect extends RedirectResponse{
 
+    /**
+     * @var App
+     */
+    private $app;
 
     /**
-     * @param string $url
+     * @param App $app
+     * @param int|string $url
      * @param int $status
      * @param array $headers
      */
-    public function __construct($url = ROOT, $status = 302, $headers = array()){
+    public function __construct(App $app, $url = ROOT, $status = 302, $headers = array()){
+        $this->app = $app;
         parent::__construct($url,$status,$headers);
     }
 
@@ -38,7 +45,7 @@ class Redirect extends RedirectResponse{
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function back(){
-        $this->setTargetUrl(App::getInstance()->get('request')->getServer()->get('HTTP_REFERER'));
+        $this->setTargetUrl($this->app->get('request')->getServer()->get('HTTP_REFERER'));
         return $this->send();
     }
 
@@ -49,7 +56,7 @@ class Redirect extends RedirectResponse{
      * @return \Symfony\Component\HttpFoundation\Response
      */
     public function to($to,$params = [],$code = 302){
-        $this->setTargetUrl(App::getInstance()->get('response')->getView()->path($to,$params));
+        $this->setTargetUrl($this->app->get('response')->getView()->path($to,$params));
         $this->setStatusCode($code);
         return $this->send();
     }
@@ -61,7 +68,7 @@ class Redirect extends RedirectResponse{
      */
     public function url($url,$code = 302){
         (substr( $url, 0, 4 ) !== "http")
-            ? $this->setTargetUrl(App::getInstance()->get('request')->root().'/'.ltrim($url,'/'))
+            ? $this->setTargetUrl($this->app->get('request')->root().'/'.ltrim($url,'/'))
             : $this->setTargetUrl($url);
         $this->setStatusCode($code);
         return $this->send();
@@ -75,7 +82,8 @@ class Redirect extends RedirectResponse{
     public function with($key, $value = null)
     {
         $key = is_array($key) ? $key : [$key => $value];
-        $session = App::getInstance()->get('session')->getSession();
+        /** @var Session $session */
+        $session = $this->app->get('session')->getSession();
         foreach ($key as $k => $v)
             $session->flash($k, $v);
         return $this;

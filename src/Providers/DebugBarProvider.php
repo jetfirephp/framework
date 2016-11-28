@@ -6,6 +6,7 @@ use DebugBar\Bridge\DoctrineCollector;
 use DebugBar\Bridge\Twig\TwigCollector;
 use DebugBar\Bridge\Twig\TwigProfilerDumperHtml;
 use DebugBar\StandardDebugBar;
+use JetFire\Framework\App;
 use Twig_Profiler_Profile;
 
 /**
@@ -25,9 +26,11 @@ class DebugBarProvider extends Provider{
 
     /**
      * DebugBarProvider constructor.
+     * @param App $app
      * @param StandardDebugBar $debugBar
      */
-    public function __construct(StandardDebugBar $debugBar){
+    public function __construct(App $app, StandardDebugBar $debugBar){
+        parent::__construct($app);
         $this->debugBar = $debugBar;
         $this->debugBarRenderer = $debugBar->getJavascriptRenderer();
     }

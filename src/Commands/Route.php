@@ -2,8 +2,6 @@
 
 namespace JetFire\Framework\Commands;
 
-
-use JetFire\Framework\App;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableCell;
 use Symfony\Component\Console\Helper\TableSeparator;
@@ -17,7 +15,6 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @package JetFire\Framework\Commands
  */
 class Route extends Command{
-
 
     /**
      *
@@ -55,7 +52,7 @@ class Route extends Command{
      * @return array
      */
     private function getCells($cells = []){
-        $collection = App::getInstance()->get('routing')->getCollection();
+        $collection = $this->app->get('routing')->getCollection();
         $tab = $table = [];
         foreach(['url','callback','name','method'] as $value)
             $table[$value] = (in_array(ucfirst($value),$cells)) ? true : false;

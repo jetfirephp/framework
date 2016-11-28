@@ -5,31 +5,25 @@ namespace JetFire\Framework\Commands;
 use JetFire\Framework\App;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 
+/**
+ * Class Command
+ * @package JetFire\Framework\Commands
+ */
 class Command extends SymfonyCommand{
 
-    private $app;
+    /**
+     * @var App
+     */
+    protected $app;
 
-    protected function getApp(){
-        if(is_null($this->app))
-            $this->app = App::getInstance();
-        return $this->app;
+    /**
+     * Command constructor.
+     * @param App $app
+     */
+    public function __construct(App $app)
+    {
+        parent::__construct(null);
+        $this->app = $app;
     }
-
-    protected function get($name,$construct = []){
-        return $this->getApp()->get($name,$construct);
-    }
-
-    protected function addAlias($alias,$class){
-        $this->getApp()->addAlias($alias,$class);
-    }
-
-    protected function register($name,$rule){
-        $this->getApp()->addRule($name,$rule);
-    }
-
-    protected function registerMap($rules){
-        $this->getApp()->addRules($rules);
-    }
-
 
 } 

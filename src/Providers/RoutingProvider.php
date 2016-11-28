@@ -2,7 +2,9 @@
 
 namespace JetFire\Framework\Providers;
 
-use JetFire\Routing\ResponseInterface;
+use JetFire\Framework\App;
+use JetFire\Routing\Matcher\MatcherInterface;
+use JetFire\Routing\Route;
 use JetFire\Routing\RouteCollection;
 use JetFire\Routing\Router;
 
@@ -14,7 +16,7 @@ class RoutingProvider extends Provider
 {
 
     /**
-     * @var
+     * @var Router
      */
     protected $router;
     /**
@@ -24,10 +26,12 @@ class RoutingProvider extends Provider
 
 
     /**
+     * @param App $app
      * @param RouteCollection $collection
      */
-    public function __construct(RouteCollection $collection)
+    public function __construct(App $app, RouteCollection $collection)
     {
+        parent::__construct($app);
         $this->collection = $collection;
     }
 
@@ -83,16 +87,16 @@ class RoutingProvider extends Provider
      */
     public function setRouter($router, $template, $responses)
     {
-        $this->getApp()->data['template_extension'] = $extension = $template['engines'][$template['use']]['extension'];
-        $response = $this->get($router['response']);
+        $this->app->data['template_extension'] = $extension = $template['engines'][$template['use']]['extension'];
+        $response = $this->app->get($router['response']);
         $this->router = new Router($this->collection, $response);
         $this->setResolver($router);
         $ext = explode('.', $extension);
         $templateExtension = array_merge(['.html', '.php', '.json', '.xml'], ['.' . end($ext), $extension]);
         $this->router->setConfig([
             'di'                 => function ($class) {
-                $this->register($class, ['shared' => true]);
-                return $this->get($class);
+                $this->app->addRule($class, ['shared' => true]);
+                return $this->app->get($class);
             },
             'templateExtension'  => $templateExtension,
             'generateRoutesPath' => $router['generateRoutePath']
@@ -106,6 +110,7 @@ class RoutingProvider extends Provider
     private function setResolver($router){
         if(!is_array($router['use']))$router['use'] = [$router['use']];
         foreach($router['use'] as $matcher) {
+            /** @var MatcherInterface $class */
             $class = new $router['matcher'][$matcher]['class']($this->router);
             $class->setResolver($router['matcher'][$matcher]['resolver']);
             $this->router->addMatcher($class);
@@ -121,9 +126,9 @@ class RoutingProvider extends Provider
         $ext = end($ext);
         $this->router->setConfig([
             'templateCallback' => [
-                $ext => function ($route) use ($template) {
-                    $this->register($template['view'], ['shared' => true]);
-                    $view = $this->get($template['view']);
+                $ext => function (Route $route) use ($template) {
+                    $this->app->addRule($template['view'], ['shared' => true]);
+                    $view = $this->app->get($template['view']);
                     $dir = ($route->getTarget('view_dir') == '')
                         ? substr($route->getTarget('template'), 0, strrpos( $route->getTarget('template'), '/') )
                         : $route->getTarget('view_dir');
@@ -131,11 +136,11 @@ class RoutingProvider extends Provider
                     $view->setExtension($template['engines'][$template['use']]['extension']);
                     $view->setTemplate(str_replace($dir, '', $route->getTarget('template')));
                     $data = (isset($route->getTarget()['data'])) ? $route->getTarget('data') : [];
-                    $flash = $this->get('session')->getSession()->allFlash();
+                    $flash = $this->app->get('session')->getSession()->allFlash();
                     foreach ($flash as $key => $content)
                         $data[$key] = $content;
                     $view->addData(isset($route->getParams()['data']) ? array_merge($route->getParams()['data'],$data) : $data);
-                    return $this->get('template')->getTemplate()->render($view);
+                    return $this->app->get('template')->getTemplate()->render($view);
                 }
             ]
         ]);

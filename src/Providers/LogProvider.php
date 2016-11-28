@@ -2,6 +2,7 @@
 
 namespace JetFire\Framework\Providers;
 
+use JetFire\Framework\App;
 use JetFire\Mailer\SwiftMailer\SwiftMailer;
 use Monolog\Logger;
 use PDO;
@@ -52,9 +53,11 @@ class LogProvider extends Provider{
     private $config;
 
     /**
+     * @param App $app
      * @param $config
      */
-    public function __construct($config){
+    public function __construct(App $app, $config){
+        parent::__construct($app);
         $this->config = $config;
     }
 
@@ -105,10 +108,10 @@ class LogProvider extends Provider{
         if(method_exists($this,$this->callHandlerMethod[$params['class']]))
             $this->setup[$id]['handlers'][$handler] = call_user_func_array([$this, $this->callHandlerMethod[$params['class']]], [$params]);
         else{
-            $this->register($params['class'],[
+            $this->app->addRule($params['class'],[
                 'shared' => true,
             ]);
-            $this->setup[$id]['handlers'][$handler] = $this->get($params['class']);
+            $this->setup[$id]['handlers'][$handler] = $this->app->get($params['class']);
         }
         if(isset($params['formatter']))
             $this->setup[$id]['handlers'][$handler]->setFormatter($this->getFormatter($this->config['formatters'][$params['formatter']]));
@@ -119,7 +122,7 @@ class LogProvider extends Provider{
      * @param $processor
      */
     private function setupProcessor($id,$processor){
-        $this->setup[$id]['processors'][$processor] = $this->get($this->config['processors'][$processor]['class']);
+        $this->setup[$id]['processors'][$processor] = $this->app->get($this->config['processors'][$processor]['class']);
     }
 
     /**
@@ -128,8 +131,8 @@ class LogProvider extends Provider{
      */
     private function getFormatter($formatter = []){
         if(isset($formatter['params']))
-            return $this->get($formatter['class'],$formatter['params']);
-        return $this->get($formatter['class']);
+            return $this->app->get($formatter['class'],$formatter['params']);
+        return $this->app->get($formatter['class']);
     }
 
     /**
@@ -137,11 +140,11 @@ class LogProvider extends Provider{
      * @return mixed
      */
     private function getStreamHandler($params){
-        $this->register($params['class'],[
+        $this->app->addRule($params['class'],[
             'shared' => true,
             'construct' => [$params['stream'],$this->level[$params['level']]]
         ]);
-        return $this->get($params['class']);
+        return $this->app->get($params['class']);
     }
 
     /**
@@ -149,7 +152,7 @@ class LogProvider extends Provider{
      * @return mixed
      */
     private function getRotatingFileHandler($params){
-        $this->register($params['class'],[
+        $this->app->addRule($params['class'],[
             'shared' => true,
             'construct' => [
                 $params['stream'],
@@ -157,7 +160,7 @@ class LogProvider extends Provider{
                 $this->level[$params['level']]
             ]
         ]);
-        return $this->get($params['class']);
+        return $this->app->get($params['class']);
     }
 
     /**
@@ -165,7 +168,7 @@ class LogProvider extends Provider{
      * @return mixed
      */
     private function getNativeMailHandler($params){
-        $this->register($params['class'],[
+        $this->app->addRule($params['class'],[
             'shared' => true,
             'construct' => [
                 $params['to'],
@@ -174,7 +177,7 @@ class LogProvider extends Provider{
                 $this->level[$params['level']]
             ]
         ]);
-        return $this->get($params['class']);
+        return $this->app->get($params['class']);
     }
 
     /**
@@ -183,10 +186,10 @@ class LogProvider extends Provider{
      * @throws \Exception
      */
     private function getSwiftMailerHandler($params){
-        $mail = $this->get('mail')->getMailer();
+        $mail = $this->app->get('mail')->getMailer();
         if(!$mail instanceof SwiftMailer)
             throw new \Exception('Instance of JetFire\Mailer\SwiftMailer\SwiftMailer is required for getSwiftMailerHandler method');
-        $this->register($params['class'], [
+        $this->app->addRule($params['class'], [
             'shared'    => true,
             'construct' => [
                 $mail->getMailer(),
@@ -194,7 +197,7 @@ class LogProvider extends Provider{
                 $this->level[$params['level']]
             ]
         ]);
-        return $this->get($params['class']);
+        return $this->app->get($params['class']);
     }
 
     /**
@@ -202,7 +205,7 @@ class LogProvider extends Provider{
      * @return mixed
      */
     private function getPDOHandler($params){
-        $db = $this->get('database');
+        $db = $this->app->get('database');
         $config = $db->getParams();
         $params['table'] = isset($config['prefix'])?$config['prefix'].$params['table']:$params['table'];
         if(isset($db->getProviders()['pdo']))
@@ -211,7 +214,7 @@ class LogProvider extends Provider{
             $config = isset($config['orm']) ? $config['orm'] : $config;
             $pdo = new PDO($config['driver'] . ':host=' . $config['host'] . ';dbname=' . $config['db'], $config['user'], $config['pass']);
         }
-        return $this->get($params['class'],[$pdo,$params['table'],$params['fields'],$this->level[$params['level']]]);
+        return $this->app->get($params['class'],[$pdo,$params['table'],$params['fields'],$this->level[$params['level']]]);
     }
 
     /**
@@ -219,9 +222,9 @@ class LogProvider extends Provider{
      * @return mixed
      */
     private function getHandler($params){
-        $this->register($params['class'],[
+        $this->app->addRule($params['class'],[
             'shared' => true,
         ]);
-        return $this->get($params['class']);
+        return $this->app->get($params['class']);
     }
 } 

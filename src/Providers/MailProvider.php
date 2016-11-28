@@ -3,6 +3,7 @@
 namespace JetFire\Framework\Providers;
 
 
+use JetFire\Framework\App;
 use JetFire\Mailer\Mail;
 
 /**
@@ -21,11 +22,13 @@ class MailProvider extends Provider{
     protected $config;
 
     /**
+     * @param App $app
      * @param $config
      */
-    public function __construct($config){
+    public function __construct(App $app, $config){
+        parent::__construct($app);
         $this->config = $config;
-        $this->register($config['mailers'][$config['use']]['class'],[
+        $this->app->addRule($config['mailers'][$config['use']]['class'],[
             'shared' => true,
             'construct' => [array_merge($config['config'],$config['mailers'][$config['use']])]
         ]);
@@ -46,14 +49,14 @@ class MailProvider extends Provider{
      * @return mixed
      */
     public function getMailer(){
-        return $this->get($this->mailer);
+        return $this->app->get($this->mailer);
     }
 
     /**
      * @return mixed
      */
     public function getMail(){
-        return $this->get($this->mailer)->getMail();
+        return $this->app->get($this->mailer)->getMail();
     }
 
     /**

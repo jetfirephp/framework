@@ -3,6 +3,7 @@
 namespace JetFire\Framework\Providers;
 
 
+use JetFire\Framework\App;
 use JetFire\Jobby\Jobby;
 use JetFire\Routing\RouteCollection;
 use JetFire\Routing\Router;
@@ -19,14 +20,18 @@ class CronProvider extends Provider{
     private $jobby;
 
     /**
+     * @param App $app
+     * @param RouteCollection $collection
      * @param Jobby $jobby
      * @param array $cron
+     * @throws \JetFire\Jobby\Exception
      */
-    public function __construct(Jobby $jobby,$cron = []){
+    public function __construct(App $app, RouteCollection $collection, Jobby $jobby, $cron = []){
+        parent::__construct($app);
         $this->jobby = $jobby;
         foreach($cron as $name => $job){
             if(isset($job['controller']))
-                $job['closure'] = $this->getClosure($job);
+                $job['closure'] = $this->getClosure($job, $collection);
             elseif(isset($job['file']))
                 $job['closure'] = function()use($job){require $job['file'];};
             if(!isset($job['output']))
@@ -44,10 +49,10 @@ class CronProvider extends Provider{
 
     /**
      * @param $job
+     * @param $collection
      * @return callable
      */
-    private function getClosure($job){
-        $collection = new RouteCollection();
+    private function getClosure($job, RouteCollection $collection){
         $collection->addRoutes([
             '/' => [
                 'use' => $job['controller'],

@@ -7,6 +7,7 @@ use JetFire\Db\Doctrine\DoctrineConstructor;
 use JetFire\Db\Model;
 use JetFire\Db\Pdo\PdoConstructor;
 use JetFire\Db\RedBean\RedBeanConstructor;
+use JetFire\Framework\App;
 
 /**
  * Class DbProvider
@@ -18,7 +19,6 @@ class DbProvider extends Provider{
      * @var array
      */
     protected $providers = [];
-
     /**
      * @var
      */
@@ -27,19 +27,20 @@ class DbProvider extends Provider{
      * @var string
      */
     private $env;
-
     /**
      * @var
      */
     private $ormCollection;
 
     /**
+     * @param App $app
      * @param array $ormCollection
      * @param array $db
      * @param $blocks
      * @param string $env
      */
-    public function __construct($ormCollection, $db, $blocks, $env){
+    public function __construct(App $app, $ormCollection, $db, $blocks, $env){
+        parent::__construct($app);
         $this->ormCollection = $ormCollection;
         $this->env = $env;
         $params = [];
@@ -59,11 +60,11 @@ class DbProvider extends Provider{
             $this->providers[$key] =  function()use($key,$ormCollection){
                 $orm = (is_array($ormCollection['drivers'][$key]))?$ormCollection['drivers'][$key]['class']:$ormCollection['drivers'][$key];
                 $options = $this->setConfiguration($key);
-                $this->register($orm,[
+                $this->app->addRule($orm,[
                     'shared' => true,
                     'construct' => [array_merge($this->db,$options)]
                 ]);
-                return $this->get($orm);
+                return $this->app->get($orm);
             };
 
     }
@@ -76,7 +77,7 @@ class DbProvider extends Provider{
         switch($orm){
             case 'doctrine':
                 return [
-                    'cache' => $this->get('cache')->getCache($this->ormCollection['drivers']['doctrine']['cache']),
+                    'cache' => $this->app->get('cache')->getCache($this->ormCollection['drivers']['doctrine']['cache']),
                     'functions' => $this->ormCollection['drivers']['doctrine']['functions']
                 ];
                 break;
@@ -89,7 +90,6 @@ class DbProvider extends Provider{
      * @param array $default
      */
     public function provide($default = []){
-
         Model::provide($this->providers,$default);
     }
 
@@ -125,7 +125,7 @@ class DbProvider extends Provider{
         if($this->env == 'dev' && $enable){
             $debugStack = new DebugStack();
             Model::orm('doctrine')->getOrm()->getConnection()->getConfiguration()->setSQLLogger($debugStack);
-            $this->get('debug_toolbar')->loadDoctrineDebugger($debugStack);
+            $this->app->get('debug_toolbar')->loadDoctrineDebugger($debugStack);
         }
     }
 

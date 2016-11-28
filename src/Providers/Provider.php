@@ -6,7 +6,12 @@ use JetFire\Framework\App;
 
 class Provider {
 
-    private $app;
+    protected $app;
+
+    public function __construct(App $app)
+    {
+        $this->app = $app;
+    }
 
     protected function getApp(){
         if(is_null($this->app))
