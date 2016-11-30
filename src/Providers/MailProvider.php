@@ -2,7 +2,6 @@
 
 namespace JetFire\Framework\Providers;
 
-
 use JetFire\Framework\App;
 use JetFire\Mailer\Mail;
 use JetFire\Mailer\MailerInterface;
@@ -22,14 +21,16 @@ class MailProvider extends Provider{
     /**
      * @var
      */
+    protected $mail;
+    /**
+     * @var
+     */
     protected $config;
 
     /**
-     * @param App $app
      * @param $config
      */
-    public function __construct(App $app, $config){
-        parent::__construct($app);
+    public function initMailer($config){
         $this->config = $config;
         $this->mailer = $config['mailers'][$config['use']]['class'];
         $this->app->addRule($this->mailer,[
@@ -37,6 +38,15 @@ class MailProvider extends Provider{
             'construct' => [array_merge($config['config'],$config['mailers'][$config['use']])]
         ]);
     }
+
+    /**
+     *
+     */
+    public function initMail(){
+        $this->mail = new Mail($this->getMailer());
+        $this->app->register($this->mail);
+    }
+
 
     /**
      * @param null $key
@@ -56,17 +66,10 @@ class MailProvider extends Provider{
     }
 
     /**
-     * @return PHPMailer | SwiftMailer
+     * @return Mail
      */
     public function getMail(){
-        return $this->app->get($this->mailer)->getMail();
+        return $this->mail;
     }
-
-    /**
-     *
-     */
-    public function initMail(){
-        Mail::init($this->getMailer());
-    }
-
+    
 } 

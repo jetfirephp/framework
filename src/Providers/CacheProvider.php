@@ -35,12 +35,10 @@ class CacheProvider extends Provider{
 
     /**
      * CacheProvider constructor.
-     * @param App $app
      * @param array $config
      * @param $env
      */
-    public function __construct(App $app, $config = [], $env){
-        parent::__construct($app);
+    public function init($config = [], $env){
         $this->config = $config;
         $this->cache = call_user_func_array([$this,$this->cacheDrivers[$config['drivers'][$config[$env]]['class']]],[$config['drivers'][$config[$env]]]);
         $this->app->addAlias($config[$env],$config['drivers'][$config[$env]]['class']);

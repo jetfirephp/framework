@@ -53,18 +53,11 @@ class LogProvider extends Provider{
     private $config;
 
     /**
-     * @param App $app
      * @param $config
-     */
-    public function __construct(App $app, $config){
-        parent::__construct($app);
-        $this->config = $config;
-    }
-
-    /**
      * @param $env
      */
-    public function setup($env){
+    public function init($config, $env){
+        $this->config = $config;
         foreach($this->config[$env] as $id => $logger){
             if(isset($logger['handlers']))
                 foreach($logger['handlers'] as $handler) {
@@ -79,7 +72,7 @@ class LogProvider extends Provider{
     /**
      *
      */
-    public function init(){
+    public function setup(){
         foreach($this->setup as $logger => $params){
             $this->loggers[$logger] = new Logger($logger);
             if(isset($params['handlers']) && !empty($params['handlers']))

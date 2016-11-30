@@ -36,13 +36,11 @@ class SessionProvider extends Provider
     ];
 
     /**
-     * @param App $app
      * @param array $config
      * @param $env
      */
-    public function __construct(App $app, $config = [], $env)
+    public function init($config = [], $env)
     {
-        parent::__construct($app);
         $handler = call_user_func_array([$this, $this->handlers[$config['handlers'][$config[$env]['handler']]['class']]], [$config['handlers'][$config[$env]['handler']]]);
         $storage = call_user_func_array([$this, $this->storages[$config['storages'][$config[$env]['storage']]['class']]], [$config['storages'][$config[$env]['storage']], $handler]);
         $this->session = new $config['class']($storage);

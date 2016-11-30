@@ -21,12 +21,10 @@ class ConsoleProvider extends Provider{
 
     /**
      * ConsoleProvider constructor.
-     * @param App $app
      * @param Application $cli
      * @param array $commands
      */
-    public function __construct(App $app, Application $cli, $commands = []){
-        parent::__construct($app);
+    public function init(Application $cli, $commands = []){
         $this->cli = $cli;
         foreach($commands as $command){
             $this->cli->add($this->app->get($command));

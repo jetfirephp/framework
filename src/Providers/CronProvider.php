@@ -20,14 +20,12 @@ class CronProvider extends Provider{
     private $jobby;
 
     /**
-     * @param App $app
      * @param RouteCollection $collection
      * @param Jobby $jobby
      * @param array $cron
      * @throws \JetFire\Jobby\Exception
      */
-    public function __construct(App $app, RouteCollection $collection, Jobby $jobby, $cron = []){
-        parent::__construct($app);
+    public function init(RouteCollection $collection, Jobby $jobby, $cron = []){
         $this->jobby = $jobby;
         foreach($cron as $name => $job){
             if(isset($job['controller']))

@@ -19,12 +19,10 @@ class AutoloadProvider extends Provider{
 
     /**
      * AutoloadProvider constructor.
-     * @param App $app
      * @param Autoload $loader
      * @param array $loads
      */
-    public function __construct(App $app, Autoload $loader, $loads = []){
-        parent::__construct($app);
+    public function init(Autoload $loader, $loads = []){
         $this->loader = $loader;
         foreach ($loads['namespaces'] as $prefix => $namespace)
             $this->loader->addNamespace($prefix,ROOT . DIRECTORY_SEPARATOR . ltrim($namespace,'/'));

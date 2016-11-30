@@ -31,12 +31,10 @@ class TemplateProvider extends Provider{
     private $engine;
 
     /**
-     * @param App $app
      * @param array $template
      * @param $env
      */
-    public function __construct(App $app, $template = [],$env){
-        parent::__construct($app);
+    public function init($template = [],$env){
         $this->engine = $template['use'];
         $this->config = $template['engines'][$template['use']];
         $this->env = $env;

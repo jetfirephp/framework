@@ -33,14 +33,12 @@ class DbProvider extends Provider{
     private $ormCollection;
 
     /**
-     * @param App $app
      * @param array $ormCollection
      * @param array $db
      * @param $blocks
      * @param string $env
      */
-    public function __construct(App $app, $ormCollection, $db, $blocks, $env){
-        parent::__construct($app);
+    public function init($ormCollection, $db, $blocks, $env){
         $this->ormCollection = $ormCollection;
         $this->env = $env;
         $params = [];

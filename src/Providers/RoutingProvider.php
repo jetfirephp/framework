@@ -25,12 +25,10 @@ class RoutingProvider extends Provider
     protected $collection;
 
     /**
-     * @param App $app
      * @param RouteCollection $collection
      */
-    public function __construct(App $app, RouteCollection $collection)
+    public function init(RouteCollection $collection)
     {
-        parent::__construct($app);
         $this->collection = $collection;
     }
 

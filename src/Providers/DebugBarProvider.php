@@ -26,11 +26,9 @@ class DebugBarProvider extends Provider{
 
     /**
      * DebugBarProvider constructor.
-     * @param App $app
      * @param StandardDebugBar $debugBar
      */
-    public function __construct(App $app, StandardDebugBar $debugBar){
-        parent::__construct($app);
+    public function init(StandardDebugBar $debugBar){
         $this->debugBar = $debugBar;
         $this->debugBarRenderer = $debugBar->getJavascriptRenderer();
     }

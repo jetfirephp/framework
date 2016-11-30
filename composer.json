@@ -18,7 +18,7 @@
         "jetfirephp/routing": "@dev",
         "jetfirephp/db": "@dev",
         "jetfirephp/http": "@dev",
-        "jetfirephp/validator": "@dev",
+        "jetfirephp/validation": "@dev",
         "jetfirephp/template": "@dev",
         "jetfirephp/mailer": "@dev",
         "jetfirephp/jobby": "@dev",
