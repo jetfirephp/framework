@@ -3,7 +3,6 @@
 namespace JetFire\Framework\System;
 
 use JetFire\Framework\App;
-use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * Class Controller
@@ -37,7 +36,6 @@ class Controller {
 
     /**
      * @param $data
-     * @return JsonResponse
      */
     public function json($data){
         /** @var Response $response */

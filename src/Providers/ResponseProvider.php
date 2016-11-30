@@ -56,7 +56,6 @@ class ResponseProvider extends Provider{
         return $this->app->get($this->redirect);
     }
 
-
     /**
      * @param $view
      */

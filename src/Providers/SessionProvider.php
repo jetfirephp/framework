@@ -1,6 +1,7 @@
 <?php
 
 namespace JetFire\Framework\Providers;
+
 use JetFire\Framework\App;
 
 
@@ -8,7 +9,8 @@ use JetFire\Framework\App;
  * Class SessionProvider
  * @package JetFire\Framework\Providers
  */
-class SessionProvider extends Provider{
+class SessionProvider extends Provider
+{
 
     /**
      * @var mixed
@@ -38,10 +40,11 @@ class SessionProvider extends Provider{
      * @param array $config
      * @param $env
      */
-    public function __construct(App $app, $config = [],$env){
+    public function __construct(App $app, $config = [], $env)
+    {
         parent::__construct($app);
-        $handler = call_user_func_array([$this,$this->handlers[$config['handlers'][$config[$env]['handler']]['class']]],[$config['handlers'][$config[$env]['handler']]]);
-        $storage =  call_user_func_array([$this,$this->storages[$config['storages'][$config[$env]['storage']]['class']]],[$config['storages'][$config[$env]['storage']],$handler]);
+        $handler = call_user_func_array([$this, $this->handlers[$config['handlers'][$config[$env]['handler']]['class']]], [$config['handlers'][$config[$env]['handler']]]);
+        $storage = call_user_func_array([$this, $this->storages[$config['storages'][$config[$env]['storage']]['class']]], [$config['storages'][$config[$env]['storage']], $handler]);
         $this->session = new $config['class']($storage);
         $this->app->register($this->session);
     }
@@ -49,14 +52,16 @@ class SessionProvider extends Provider{
     /**
      *
      */
-    public function start(){
+    public function start()
+    {
         $this->session->start();
     }
 
     /**
      * @return \JetFire\Http\Session
      */
-    public function getSession(){
+    public function getSession()
+    {
         return $this->session;
     }
 
@@ -65,17 +70,19 @@ class SessionProvider extends Provider{
      * @param $handler
      * @return mixed
      */
-    private function nativeStorage($config,$handler){
-        if(isset($config['args']))
-            return new $config['class']($config['args'],$handler);
-        return new $config['class']([],$handler);
+    private function nativeStorage($config, $handler)
+    {
+        if (isset($config['args']))
+            return new $config['class']($config['args'], $handler);
+        return new $config['class']([], $handler);
     }
 
     /**
      * @param $config
      * @return mixed
      */
-    private function nativeHandler($config){
+    private function nativeHandler($config)
+    {
         return new $config['class'];
     }
 
@@ -83,8 +90,9 @@ class SessionProvider extends Provider{
      * @param $config
      * @return mixed
      */
-    private function fileHandler($config){
-        if(isset($config['args']) && isset($config['args'][0]))
+    private function fileHandler($config)
+    {
+        if (isset($config['args']) && isset($config['args'][0]))
             return new $config['class']($config['args'][0]);
         return new $config['class'];
     }
@@ -93,13 +101,14 @@ class SessionProvider extends Provider{
      * @param $config
      * @return mixed
      */
-    private function pdoHandler($config){
+    private function pdoHandler($config)
+    {
         $db = $this->app->get('database');
         $params = $db->getParams();
-        $config['args'][1]['db_table'] = isset($params['prefix'])?$params['prefix'].$config['args'][1]['db_table']:$config['args'][1]['db_table'];
-        if(isset($db->getProviders()['pdo'])) {
+        $config['args'][1]['db_table'] = isset($params['prefix']) ? $params['prefix'] . $config['args'][1]['db_table'] : $config['args'][1]['db_table'];
+        if (isset($db->getProviders()['pdo'])) {
             $pdo = $db->getProvider('pdo')->getOrm();
-            $pdo->exec('CREATE TABLE IF NOT EXISTS '.$config['args'][1]['db_table'].' (
+            $pdo->exec('CREATE TABLE IF NOT EXISTS ' . $config['args'][1]['db_table'] . ' (
                     sess_id INT(6) UNSIGNED PRIMARY KEY,
                     sess_data VARCHAR(255) NOT NULL,
                     sess_lifetime DATETIME NOT NULL,
@@ -107,27 +116,29 @@ class SessionProvider extends Provider{
                 )');
             return new $config['class']($pdo, $config['args'][1]);
         }
-        return new $config['class']($config['args'][0],$config['args'][1]);
+        return new $config['class']($config['args'][0], $config['args'][1]);
     }
 
     /**
      * @param $config
      * @return mixed
      */
-    private function memcacheHandler($config){
-        if(!isset($config['args']) || !isset($config['args'][0]) || !isset($config['args'][1]))
+    private function memcacheHandler($config)
+    {
+        if (!isset($config['args']) || !isset($config['args'][0]) || !isset($config['args'][1]))
             throw new \InvalidArgumentException('Arguments expected for session memcache handler.');
-        return new $config['class']($this->app->get($config['args'][0]),$config['args'][1]);
+        return new $config['class']($this->app->get($config['args'][0]), $config['args'][1]);
     }
 
     /**
      * @param $config
      * @return mixed
      */
-    private function memcachedHandler($config){
-        if(!isset($config['args']) || !isset($config['args'][0]) || !isset($config['args'][1]))
+    private function memcachedHandler($config)
+    {
+        if (!isset($config['args']) || !isset($config['args'][0]) || !isset($config['args'][1]))
             throw new \InvalidArgumentException('Arguments expected for session memcached handler.');
-        return new $config['class']($this->app->get($config['args'][0]),$config['args'][1]);
+        return new $config['class']($this->app->get($config['args'][0]), $config['args'][1]);
     }
 
 

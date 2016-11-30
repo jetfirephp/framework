@@ -2,9 +2,8 @@
 
 namespace JetFire\Framework\System;
 
-use JetFire\Framework\App;
-use JetFire\Framework\Providers\RoutingProvider;
 use JetFire\Http\Session;
+use JetFire\Routing\Router;
 use JetFire\Validator\Validator;
 use JetFire\Http\Request as HttpRequest;
 
@@ -12,7 +11,8 @@ use JetFire\Http\Request as HttpRequest;
  * Class Request
  * @package JetFire\Framework\System
  */
-class Request extends HttpRequest{
+class Request extends HttpRequest
+{
 
     /**
      * @return \Symfony\Component\HttpFoundation\ParameterBag
@@ -64,54 +64,57 @@ class Request extends HttpRequest{
 
     /**
      * @param Session $session
-     * @param RoutingProvider $routing
+     * @param Router $router
      */
-    public function __construct(Session $session,RoutingProvider $routing){
+    public function __construct(Session $session, Router $router)
+    {
         parent::__construct();
         $this->setSession($session);
-        $this->attributes->set('routing',$routing->getRouter());
+        $this->attributes->set('routing', $router);
     }
 
     /**
      * @return mixed
      */
-    public function getRoute(){
+    public function getRoute()
+    {
         return $this->attributes->get('routing')->route;
     }
 
     /**
      * @return array|bool
      */
-    public function validate(){
-        $validate = ($this->method() == 'GET')?'validateGet':'validatePost';
+    public function validate()
+    {
+        $validate = ($this->method() == 'GET') ? 'validateGet' : 'validatePost';
         $args = func_num_args();
         $request = get_called_class();
         $response = false;
-        if($args == 0) {
+        if ($args == 0) {
             if (method_exists($request, 'rules') && property_exists($request, 'messages'))
                 $response = Validator::$validate($request::rules(), $request::$messages);
             else if (method_exists($request, 'rules') && !property_exists($request, 'messages'))
-                $response =  Validator::$validate($request::rules());
+                $response = Validator::$validate($request::rules());
         }
         if ($args == 1) {
             $param = func_get_arg(0);
-            if(is_array($param)) {
+            if (is_array($param)) {
                 if (property_exists($request, 'messages'))
                     $response = Validator::$validate($param, $request::$messages);
                 else
                     $response = Validator::$validate($param);
-            }else{
+            } else {
                 if (method_exists($request, $param) && property_exists($request, 'messages'))
                     $response = Validator::$validate($request::$param(), $request::$messages);
                 else if (method_exists($request, $param) && !property_exists($request, 'messages'))
-                    $response =  Validator::$validate($request::$param());
+                    $response = Validator::$validate($request::$param());
             }
         }
-        if($args == 2) {
+        if ($args == 2) {
             $response = Validator::$validate(func_get_arg(0), func_get_arg(1));
         }
-        if($response['valid'] === true) {
-            $this->attributes->set('response_values',$response['values']);
+        if ($response['valid'] === true) {
+            $this->attributes->set('response_values', $response['values']);
             $this->request->add($response['values']);
             return true;
         }
@@ -121,7 +124,8 @@ class Request extends HttpRequest{
     /**
      * @return array
      */
-    public function filled(){
+    public function filled()
+    {
         $values = [];
         foreach ($this->request->all() as $key => $post) {
             if (strtolower($key) != 'submit' && strtoupper($key) != '_METHOD' && strtolower($key) != '_token')
@@ -134,7 +138,8 @@ class Request extends HttpRequest{
     /**
      * @return array
      */
-    public function values(){
+    public function values()
+    {
         return $this->attributes->get('response_values');
     }
 
@@ -144,8 +149,9 @@ class Request extends HttpRequest{
      * @param array $token
      * @return bool
      */
-    public function submit($value = null,$token = []){
-        if($this->method() != 'GET') {
+    public function submit($value = null, $token = [])
+    {
+        if ($this->method() != 'GET') {
             if (is_array($value)) $token = $value;
             if (!$this->hasXss($token)) return false;
             if (!is_array($value) && !is_null($value))
@@ -159,7 +165,8 @@ class Request extends HttpRequest{
      * @param array $token
      * @return bool
      */
-    public function hasXss($token = []){
+    public function hasXss($token = [])
+    {
         if (!isset($token['token'])) {
             if (!isset($token['time'])) $token['time'] = 600;
             if (!isset($token['name'])) $token['name'] = '';
@@ -181,7 +188,7 @@ class Request extends HttpRequest{
         if ($session->get($name . '_token_') && $this->request->get($name . '_token') != '') {
             if ($session->get($name . '_token_')['key'] == $this->request->get($name . '_token')) {
                 if ($session->get($name . '_token_')['time'] >= (time() - $time)) {
-                    $session->remove($name.'_token_');
+                    $session->remove($name . '_token_');
                     if (is_null($referer)) return true;
                     else if (!is_null($referer) && $this->request->referer() == ROOT . $referer) return true;
                 }

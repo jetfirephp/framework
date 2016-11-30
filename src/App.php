@@ -44,7 +44,7 @@ class App extends Di{
      */
     public function load($config = []){
         $this->config = $config;
-        $this->instances[App::class] = $this;
+        $this->register($this);
         foreach($this->config['required_files'] as $file)
             if (file_exists($file)) require $file;
         foreach($this->config['include_files'] as $key => $file)

@@ -4,35 +4,24 @@ namespace JetFire\Framework\Providers;
 
 use JetFire\Framework\App;
 
+/**
+ * Class Provider
+ * @package JetFire\Framework\Providers
+ */
 class Provider {
 
+    /**
+     * @var App
+     */
     protected $app;
 
+    /**
+     * Provider constructor.
+     * @param App $app
+     */
     public function __construct(App $app)
     {
         $this->app = $app;
-    }
-
-    protected function getApp(){
-        if(is_null($this->app))
-            $this->app = App::getInstance();
-        return $this->app;
-    }
-
-    protected function get($name,$construct = []){
-        return $this->getApp()->get($name,$construct);
-    }
-
-    protected function addAlias($alias,$class){
-        $this->getApp()->addAlias($alias,$class);
-    }
-
-    protected function register($name,$rule){
-        $this->getApp()->addRule($name,$rule);
-    }
-
-    protected function registerMap($rules){
-        $this->getApp()->addRules($rules);
     }
 
 } 
