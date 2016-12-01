@@ -4,6 +4,7 @@ namespace JetFire\Framework\System;
 
 use JetFire\Http\Session;
 use JetFire\Routing\Router;
+use JetFire\Validation\Validation;
 use JetFire\Validator\Validator;
 use JetFire\Http\Request as HttpRequest;
 
@@ -13,6 +14,17 @@ use JetFire\Http\Request as HttpRequest;
  */
 class Request extends HttpRequest
 {
+    /**
+     * @param Session $session
+     * @param Router $router
+     */
+    public function __construct(Session $session, Router $router)
+    {
+        parent::__construct();
+        $this->setSession($session);
+        $this->attributes->set('routing', $router);
+    }
+
 
     /**
      * @return \Symfony\Component\HttpFoundation\ParameterBag
@@ -61,18 +73,7 @@ class Request extends HttpRequest
     {
         return $this->server;
     }
-
-    /**
-     * @param Session $session
-     * @param Router $router
-     */
-    public function __construct(Session $session, Router $router)
-    {
-        parent::__construct();
-        $this->setSession($session);
-        $this->attributes->set('routing', $router);
-    }
-
+    
     /**
      * @return mixed
      */
@@ -87,31 +88,32 @@ class Request extends HttpRequest
     public function validate()
     {
         $validate = ($this->method() == 'GET') ? 'validateGet' : 'validatePost';
+        $validation = new Validation();
         $args = func_num_args();
         $request = get_called_class();
         $response = false;
         if ($args == 0) {
             if (method_exists($request, 'rules') && property_exists($request, 'messages'))
-                $response = Validator::$validate($request::rules(), $request::$messages);
+                $response = $validation->$validate($request::rules(), $request::$messages);
             else if (method_exists($request, 'rules') && !property_exists($request, 'messages'))
-                $response = Validator::$validate($request::rules());
+                $response = $validation->$validate($request::rules());
         }
         if ($args == 1) {
             $param = func_get_arg(0);
             if (is_array($param)) {
                 if (property_exists($request, 'messages'))
-                    $response = Validator::$validate($param, $request::$messages);
+                    $response = $validation->$validate($param, $request::$messages);
                 else
-                    $response = Validator::$validate($param);
+                    $response = $validation->$validate($param);
             } else {
                 if (method_exists($request, $param) && property_exists($request, 'messages'))
-                    $response = Validator::$validate($request::$param(), $request::$messages);
+                    $response = $validation->$validate($request::$param(), $request::$messages);
                 else if (method_exists($request, $param) && !property_exists($request, 'messages'))
-                    $response = Validator::$validate($request::$param());
+                    $response = $validation->$validate($request::$param());
             }
         }
         if ($args == 2) {
-            $response = Validator::$validate(func_get_arg(0), func_get_arg(1));
+            $response = $validation->$validate(func_get_arg(0), func_get_arg(1));
         }
         if ($response['valid'] === true) {
             $this->attributes->set('response_values', $response['values']);
@@ -190,7 +192,7 @@ class Request extends HttpRequest
                 if ($session->get($name . '_token_')['time'] >= (time() - $time)) {
                     $session->remove($name . '_token_');
                     if (is_null($referer)) return true;
-                    else if (!is_null($referer) && $this->request->referer() == ROOT . $referer) return true;
+                    else if (!is_null($referer) && $this->referer() == ROOT . $referer) return true;
                 }
             }
         }

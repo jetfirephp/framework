@@ -8,7 +8,8 @@ use JetFire\Framework\App;
  * Class Controller
  * @package JetFire\Framework\System
  */
-class Controller {
+class Controller
+{
 
 
     /**
@@ -30,14 +31,16 @@ class Controller {
      * @param array $data
      * @return mixed
      */
-    public function render($path,$data = []){
-        return $this->app->get('response')->getView()->render($path,$data);
+    public function render($path, $data = [])
+    {
+        return $this->app->get('response')->getView()->render($path, $data);
     }
 
     /**
      * @param $data
      */
-    public function json($data){
+    public function json($data)
+    {
         /** @var Response $response */
         $response = $this->app->get('routing')->getResponse();
         $response->setContent(json_encode($data));
@@ -50,19 +53,20 @@ class Controller {
      * @param int $code
      * @return mixed
      */
-    public function redirect($to = null,$params = [],$code = 302){
+    public function redirect($to = null, $params = [], $code = 302)
+    {
         if (is_null($to))
             return $this->app->get('response')->getRedirect();
-        return $this->app->get('response')->getRedirect()->to($to,$params,$code);
+        return $this->app->get('response')->getRedirect()->to($to, $params, $code);
     }
 
     /**
-     * @return mixed
+     * @return Response
      */
-    public function response(){
+    public function response()
+    {
         return $this->app->get('routing')->getResponse();
     }
-
 
 
 }
