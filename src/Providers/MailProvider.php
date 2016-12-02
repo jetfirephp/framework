@@ -3,7 +3,7 @@
 namespace JetFire\Framework\Providers;
 
 use JetFire\Framework\App;
-use JetFire\Mailer\Mail;
+use JetFire\Framework\System\Mail;
 use JetFire\Mailer\MailerInterface;
 use JetFire\Mailer\PhpMailer\PhpMailer;
 use JetFire\Mailer\SwiftMailer\SwiftMailer;
@@ -43,7 +43,7 @@ class MailProvider extends Provider{
      *
      */
     public function initMail(){
-        $this->mail = new Mail($this->getMailer());
+        $this->mail = new Mail($this->app, $this->getMailer());
         $this->app->register($this->mail);
     }
 

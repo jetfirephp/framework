@@ -37,17 +37,6 @@ class Controller
     }
 
     /**
-     * @param $data
-     */
-    public function json($data)
-    {
-        /** @var Response $response */
-        $response = $this->app->get('routing')->getResponse();
-        $response->setContent(json_encode($data));
-        $response->headers->set('Content-Type', 'application/json');
-    }
-
-    /**
      * @param null $to
      * @param array $params
      * @param int $code
@@ -59,14 +48,5 @@ class Controller
             return $this->app->get('response')->getRedirect();
         return $this->app->get('response')->getRedirect()->to($to, $params, $code);
     }
-
-    /**
-     * @return Response
-     */
-    public function response()
-    {
-        return $this->app->get('routing')->getResponse();
-    }
-
-
+    
 }

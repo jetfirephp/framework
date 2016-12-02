@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Cookie as HttpCookie;
 class Cookie {
 
     /**
-     * @var
+     * @var $this
      */
     private static $instance;
     /**
