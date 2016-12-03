@@ -2,6 +2,7 @@
 
 namespace JetFire\Framework\System;
 
+use JetFire\Framework\Providers\RoutingProvider;
 use Symfony\Component\HttpFoundation\Cookie as HttpCookie;
 
 /**
@@ -33,11 +34,11 @@ class Cookie {
 
     /**
      * @param Request $request
-     * @param Response $response
+     * @param RoutingProvider $routingProvider
      */
-    public function __construct(Request $request, Response $response){
+    public function __construct(Request $request, RoutingProvider $routingProvider){
         $this->cookies = $request->getCookies();
-        $this->response = $response;
+        $this->response = $routingProvider->getResponse();
         self::$instance = $this;
     }
 
