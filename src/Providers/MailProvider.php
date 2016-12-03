@@ -2,11 +2,8 @@
 
 namespace JetFire\Framework\Providers;
 
-use JetFire\Framework\App;
 use JetFire\Framework\System\Mail;
 use JetFire\Mailer\MailerInterface;
-use JetFire\Mailer\PhpMailer\PhpMailer;
-use JetFire\Mailer\SwiftMailer\SwiftMailer;
 
 /**
  * Class MailProvider
@@ -40,11 +37,15 @@ class MailProvider extends Provider{
     }
 
     /**
-     *
+     * @param $mail
      */
-    public function initMail(){
-        $this->mail = new Mail($this->app, $this->getMailer());
-        $this->app->register($this->mail);
+    public function initMail($mail){
+        $this->mail = $mail;
+        $this->app->addRule($this->mail,[
+            'shared' => true,
+            'construct' => [$this->app],
+            'substitutions' => ['JetFire\Mailer\MailerInterface' => ['instance' => $this->mailer]]
+        ]);
     }
 
 
@@ -69,7 +70,7 @@ class MailProvider extends Provider{
      * @return Mail
      */
     public function getMail(){
-        return $this->mail;
+        return $this->app->get($this->mail);
     }
-    
+
 } 

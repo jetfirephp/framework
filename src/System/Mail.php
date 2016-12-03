@@ -41,7 +41,7 @@ class Mail extends MailComponent
             ? $this->app->data['app']['settings']['mail']['from']
             : 'contact@jetfire.fr';
         /** @var MailerInterface $message */
-        $message = $this->mailer->getMail()->to($to)
+        $message = $this->to($to)
             ->from($from)
             ->subject($subject)
             ->html($content);
