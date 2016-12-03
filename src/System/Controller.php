@@ -40,7 +40,7 @@ class Controller
      * @param null $to
      * @param array $params
      * @param int $code
-     * @return mixed
+     * @return boolean
      */
     public function redirect($to = null, $params = [], $code = 302)
     {

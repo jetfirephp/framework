@@ -5,7 +5,6 @@ namespace JetFire\Framework\System;
 use JetFire\Http\Session;
 use JetFire\Routing\Router;
 use JetFire\Validation\Validation;
-use JetFire\Validator\Validator;
 use JetFire\Http\Request as HttpRequest;
 
 /**

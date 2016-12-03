@@ -7,6 +7,14 @@ use Symfony\Component\HttpFoundation\Cookie as HttpCookie;
 /**
  * Class Cookie
  * @package JetFire\Framework\System
+ * @method mixed all()
+ * @method mixed keys()
+ * @method mixed replace($parameters = [])
+ * @method mixed set($key, $value)
+ * @method mixed add($parameters = [])
+ * @method mixed get($key,$default = null, $deep = false)
+ * @method mixed has($key)
+ * @method mixed remove($key)
  */
 class Cookie {
 
@@ -56,7 +64,7 @@ class Cookie {
      * @param bool $secure
      * @param bool $httpOnly
      */
-    public function set($name, $value = null, $expire = 0, $path = '/', $domain = null, $secure = false, $httpOnly = true){
+    public function init($name, $value = null, $expire = 0, $path = '/', $domain = null, $secure = false, $httpOnly = true){
         $this->response->headers->setCookie(new HttpCookie($name, $value, $expire, $path, $domain, $secure, $httpOnly));
     }
 

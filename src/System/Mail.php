@@ -33,6 +33,7 @@ class Mail extends MailComponent
      * @param $subject
      * @param $content
      * @param null $file
+     * @return mixed
      */
     public function sendTo($to, $subject, $content, $file = null)
     {
@@ -46,7 +47,7 @@ class Mail extends MailComponent
             ->html($content);
         if (!is_null($file))
             $message->file($file);
-        $message->send();
+        return $message->send();
     }
 
 } 

@@ -3,7 +3,7 @@
 namespace JetFire\Framework\System;
 
 use JetFire\Http\Session;
-use Symfony\Component\HttpFoundation\Cookie;
+use Symfony\Component\HttpFoundation\Cookie as HttpCookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
@@ -123,7 +123,7 @@ class Redirect extends RedirectResponse
      */
     public function withCookie($key, $value, $expire = 0)
     {
-        $this->headers->setCookie(new Cookie($key, $value, $expire));
+        $this->headers->setCookie(new HttpCookie($key, $value, $expire));
         return $this;
     }
 
