@@ -3,14 +3,14 @@
 namespace JetFire\Framework\System;
 
 use JetFire\Framework\App;
-use JetFire\Mailer\Mail as MailComponent;
+use JetFire\Framework\Providers\MailProvider;
 use JetFire\Mailer\MailerInterface;
 
 /**
  * Class Mail
  * @package JetFire\Framework\System
  */
-class Mail extends MailComponent
+class Mail
 {
     /**
      * @var App
@@ -18,14 +18,25 @@ class Mail extends MailComponent
     private $app;
 
     /**
+     * @var \JetFire\Mailer\Mail
+     */
+    private $mail;
+
+    /**
+     * @var Mail
+     */
+    private static $instance;
+
+    /**
      * Mail constructor.
      * @param App $app
-     * @param MailerInterface $mailer
+     * @param MailProvider $mailProvider
      */
-    public function __construct(App $app, MailerInterface $mailer)
+    public function __construct(App $app, MailProvider $mailProvider)
     {
-        parent::__construct($mailer);
+        $this->mail = $mailProvider->getMail();
         $this->app = $app;
+        self::$instance = $this;
     }
 
     /**
@@ -41,13 +52,47 @@ class Mail extends MailComponent
             ? $this->app->data['app']['settings']['mail']['from']
             : 'contact@jetfire.fr';
         /** @var MailerInterface $message */
-        $message = $this->to($to)
+        $message = $this->mail->to($to)
             ->from($from)
             ->subject($subject)
             ->html($content);
         if (!is_null($file))
             $message->file($file);
         return $message->send();
+    }
+
+    /**
+     * @return Mail
+     */
+    public static function getInstance(){
+        return self::$instance;
+    }
+
+    /**
+     * @return Mail|\JetFire\Mailer\Mail
+     */
+    public function getMail(){
+        return $this->mail;
+    }
+
+    /**
+     * @param $name
+     * @param $arguments
+     * @return mixed
+     */
+    public function __call($name, $arguments)
+    {
+        return call_user_func_array([$this->mail,$name],$arguments);
+    }
+
+    /**
+     * @param $name
+     * @param $arguments
+     * @return mixed
+     */
+    public static function __callStatic($name, $arguments)
+    {
+        return call_user_func_array([self::getInstance()->getMail(),$name],$arguments);
     }
 
 } 
