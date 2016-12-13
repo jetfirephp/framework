@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d23a9374a5658711fd837bfe3d696a29",
+    "hash": "31db0bf3470239ae97a3b3c6cedaeea9",
     "content-hash": "c7e86cff96c6305995bf9cf883d958db",
     "packages": [
         {
@@ -13,12 +13,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/cache.git",
-                "reference": "0e7ac7811c67d1c4fe93e0fe44d11c90e09d6b20"
+                "reference": "9fa5962201c8b69cb68d091bfa6a77e92e2a3559"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/cache/zipball/0e7ac7811c67d1c4fe93e0fe44d11c90e09d6b20",
-                "reference": "0e7ac7811c67d1c4fe93e0fe44d11c90e09d6b20",
+                "url": "https://api.github.com/repos/doctrine/cache/zipball/9fa5962201c8b69cb68d091bfa6a77e92e2a3559",
+                "reference": "9fa5962201c8b69cb68d091bfa6a77e92e2a3559",
                 "shasum": ""
             },
             "require": {
@@ -74,7 +74,7 @@
                 "cache",
                 "caching"
             ],
-            "time": "2016-10-29 11:43:38"
+            "time": "2016-12-04 05:51:54"
         },
         {
             "name": "ircmaxell/password-compat",
@@ -124,12 +124,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jeremeamia/super_closure.git",
-                "reference": "378cdc081c75f3024ee862d73272a52bc7e5f6b5"
+                "reference": "443c3df3207f176a1b41576ee2a66968a507b3db"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jeremeamia/super_closure/zipball/378cdc081c75f3024ee862d73272a52bc7e5f6b5",
-                "reference": "378cdc081c75f3024ee862d73272a52bc7e5f6b5",
+                "url": "https://api.github.com/repos/jeremeamia/super_closure/zipball/443c3df3207f176a1b41576ee2a66968a507b3db",
+                "reference": "443c3df3207f176a1b41576ee2a66968a507b3db",
                 "shasum": ""
             },
             "require": {
@@ -174,7 +174,7 @@
                 "serialize",
                 "tokenizer"
             ],
-            "time": "2016-10-24 13:58:03"
+            "time": "2016-12-07 09:37:55"
         },
         {
             "name": "jetfirephp/autoload",
@@ -224,12 +224,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jetfirephp/db.git",
-                "reference": "c4909dbf4d09cd74d9df7d618eaf700d334b057b"
+                "reference": "ba7c65f7e971a7443d1b4da0ed57625cb4f87f31"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jetfirephp/db/zipball/c4909dbf4d09cd74d9df7d618eaf700d334b057b",
-                "reference": "c4909dbf4d09cd74d9df7d618eaf700d334b057b",
+                "url": "https://api.github.com/repos/jetfirephp/db/zipball/ba7c65f7e971a7443d1b4da0ed57625cb4f87f31",
+                "reference": "ba7c65f7e971a7443d1b4da0ed57625cb4f87f31",
                 "shasum": ""
             },
             "require": {
@@ -263,7 +263,7 @@
                 "orm",
                 "pdo"
             ],
-            "time": "2016-10-28 09:03:56"
+            "time": "2016-12-11 13:44:30"
         },
         {
             "name": "jetfirephp/debugbar",
@@ -456,12 +456,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jetfirephp/mailer.git",
-                "reference": "ccb769486be0f39ab089b92081145eacbfcdb690"
+                "reference": "36d6e2d711a97941b10bf99b587128f6664bd352"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jetfirephp/mailer/zipball/ccb769486be0f39ab089b92081145eacbfcdb690",
-                "reference": "ccb769486be0f39ab089b92081145eacbfcdb690",
+                "url": "https://api.github.com/repos/jetfirephp/mailer/zipball/36d6e2d711a97941b10bf99b587128f6664bd352",
+                "reference": "36d6e2d711a97941b10bf99b587128f6664bd352",
                 "shasum": ""
             },
             "require": {
@@ -494,7 +494,7 @@
                 "phpmailer",
                 "swiftmailer"
             ],
-            "time": "2016-03-21 09:18:29"
+            "time": "2016-12-02 20:51:58"
         },
         {
             "name": "jetfirephp/routing",
@@ -502,12 +502,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jetfirephp/routing.git",
-                "reference": "124d9620283b67e3c51f81adbd94616594d17c1a"
+                "reference": "cd2d6ec3e368296bf84c9693dae6a4e06535b84a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jetfirephp/routing/zipball/124d9620283b67e3c51f81adbd94616594d17c1a",
-                "reference": "124d9620283b67e3c51f81adbd94616594d17c1a",
+                "url": "https://api.github.com/repos/jetfirephp/routing/zipball/cd2d6ec3e368296bf84c9693dae6a4e06535b84a",
+                "reference": "cd2d6ec3e368296bf84c9693dae6a4e06535b84a",
                 "shasum": ""
             },
             "require": {
@@ -542,7 +542,7 @@
                 "Rounting",
                 "dispatcher"
             ],
-            "time": "2016-11-30 14:32:31"
+            "time": "2016-12-11 11:54:42"
         },
         {
             "name": "jetfirephp/template",
@@ -596,12 +596,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jetfirephp/validation.git",
-                "reference": "434158298cedbf65ef932ddf527abc64daecb094"
+                "reference": "2ba9f1b5aaf2d2c74adf4ad61807677ee50ab6eb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jetfirephp/validation/zipball/434158298cedbf65ef932ddf527abc64daecb094",
-                "reference": "434158298cedbf65ef932ddf527abc64daecb094",
+                "url": "https://api.github.com/repos/jetfirephp/validation/zipball/2ba9f1b5aaf2d2c74adf4ad61807677ee50ab6eb",
+                "reference": "2ba9f1b5aaf2d2c74adf4ad61807677ee50ab6eb",
                 "shasum": ""
             },
             "require": {
@@ -629,7 +629,7 @@
                 "input validation",
                 "php validation"
             ],
-            "time": "2016-11-30 19:16:13"
+            "time": "2016-12-06 14:26:18"
         },
         {
             "name": "league/plates",
@@ -689,12 +689,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "bad29cb8d18ab0315e6c477751418a82c850d558"
+                "reference": "fdd6780ffd2f1aa1d7af7d6c69f186bf17d35cd4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/bad29cb8d18ab0315e6c477751418a82c850d558",
-                "reference": "bad29cb8d18ab0315e6c477751418a82c850d558",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/fdd6780ffd2f1aa1d7af7d6c69f186bf17d35cd4",
+                "reference": "fdd6780ffd2f1aa1d7af7d6c69f186bf17d35cd4",
                 "shasum": ""
             },
             "require": {
@@ -759,7 +759,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2016-11-26 00:15:39"
+            "time": "2016-12-04 18:12:24"
         },
         {
             "name": "mtdowling/cron-expression",
@@ -811,12 +811,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "68973aed1e023948d30dd12460aeb429f6d59329"
+                "reference": "301c34373db1f978aa5d7f4b2965b1b63448e7eb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/68973aed1e023948d30dd12460aeb429f6d59329",
-                "reference": "68973aed1e023948d30dd12460aeb429f6d59329",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/301c34373db1f978aa5d7f4b2965b1b63448e7eb",
+                "reference": "301c34373db1f978aa5d7f4b2965b1b63448e7eb",
                 "shasum": ""
             },
             "require": {
@@ -854,7 +854,7 @@
                 "parser",
                 "php"
             ],
-            "time": "2016-11-30 18:20:29"
+            "time": "2016-12-11 15:47:47"
         },
         {
             "name": "psr/log",
@@ -960,12 +960,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "0eeddc19feb3bd91c443e676bd07c6ce5c30cfa3"
+                "reference": "3c2380fcde1e7311afdc20836f4db460f0550427"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/0eeddc19feb3bd91c443e676bd07c6ce5c30cfa3",
-                "reference": "0eeddc19feb3bd91c443e676bd07c6ce5c30cfa3",
+                "url": "https://api.github.com/repos/symfony/console/zipball/3c2380fcde1e7311afdc20836f4db460f0550427",
+                "reference": "3c2380fcde1e7311afdc20836f4db460f0550427",
                 "shasum": ""
             },
             "require": {
@@ -1015,7 +1015,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2016-11-19 20:35:20"
+            "time": "2016-12-08 15:31:48"
         },
         {
             "name": "symfony/debug",
@@ -1464,12 +1464,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "e1ff66e28655371a5f2cc15ab128fe7acc881b88"
+                "reference": "a3c861897142cbbaa55d89754b8850bd5a2cb6ff"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/e1ff66e28655371a5f2cc15ab128fe7acc881b88",
-                "reference": "e1ff66e28655371a5f2cc15ab128fe7acc881b88",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/a3c861897142cbbaa55d89754b8850bd5a2cb6ff",
+                "reference": "a3c861897142cbbaa55d89754b8850bd5a2cb6ff",
                 "shasum": ""
             },
             "require": {
@@ -1519,7 +1519,7 @@
                 "debug",
                 "dump"
             ],
-            "time": "2016-11-29 11:12:53"
+            "time": "2016-12-08 15:31:48"
         }
     ],
     "packages-dev": [],
