@@ -2,9 +2,7 @@
 
 namespace JetFire\Framework\Providers;
 
-
-use JetFire\Framework\App;
-use JetFire\Jobby\Jobby;
+use Jobby\Jobby;
 use JetFire\Routing\RouteCollection;
 use JetFire\Routing\Router;
 
@@ -23,7 +21,7 @@ class CronProvider extends Provider{
      * @param RouteCollection $collection
      * @param Jobby $jobby
      * @param array $cron
-     * @throws \JetFire\Jobby\Exception
+     * @throws \Jobby\Exception
      */
     public function init(RouteCollection $collection, Jobby $jobby, $cron = []){
         $this->jobby = $jobby;
