@@ -38,13 +38,15 @@ class SystemProvider extends Provider
     }
 
     /**
-     *
+     * @param $error
      */
-    public function handleError()
+    public function handleError($error)
     {
-        error_reporting(-1);
-        ini_set('display_startup_errors', true);
-        ini_set('display_errors', 'stdout');
+        if($this->app->data['config']['system']['environment'] == 'dev') {
+            (isset($error['displays'])) ? error_reporting($error['displays']) : error_reporting(-1);
+            ini_set('display_startup_errors', true);
+            ini_set('display_errors', 'stdout');
+        }
     }
 
     /**

@@ -3,8 +3,8 @@
 namespace JetFire\Framework\System;
 
 use JetFire\Framework\App;
-use JetFire\Mailer\Mail as MailComponent;
 use JetFire\Mailer\MailerInterface;
+use JetFire\Mailer\Mail as MailComponent;
 
 /**
  * Class Mail
