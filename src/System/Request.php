@@ -91,28 +91,33 @@ class Request extends HttpRequest
         $args = func_num_args();
         $request = get_called_class();
         $response = false;
-        if ($args == 0) {
-            if (method_exists($request, 'rules') && property_exists($request, 'messages'))
-                $response = $validation->$validate($request::rules(), $request::$messages);
-            else if (method_exists($request, 'rules') && !property_exists($request, 'messages'))
-                $response = $validation->$validate($request::rules());
-        }
-        if ($args == 1) {
-            $param = func_get_arg(0);
-            if (is_array($param)) {
-                if (property_exists($request, 'messages'))
-                    $response = $validation->$validate($param, $request::$messages);
-                else
-                    $response = $validation->$validate($param);
-            } else {
-                if (method_exists($request, $param) && property_exists($request, 'messages'))
-                    $response = $validation->$validate($request::$param(), $request::$messages);
-                else if (method_exists($request, $param) && !property_exists($request, 'messages'))
-                    $response = $validation->$validate($request::$param());
-            }
-        }
-        if ($args == 2) {
-            $response = $validation->$validate(func_get_arg(0), func_get_arg(1));
+        switch($args){
+            case 0:
+                if (method_exists($request, 'rules') && property_exists($request, 'messages'))
+                    $response = $validation->$validate($request::rules(), $request::$messages);
+                else if (method_exists($request, 'rules') && !property_exists($request, 'messages'))
+                    $response = $validation->$validate($request::rules());
+                break;
+            case 1:
+                $param = func_get_arg(0);
+                if (is_array($param)) {
+                    if (property_exists($request, 'messages'))
+                        $response = $validation->$validate($param, $request::$messages);
+                    else
+                        $response = $validation->$validate($param);
+                } else {
+                    if (method_exists($request, $param) && property_exists($request, 'messages'))
+                        $response = $validation->$validate($request::$param(), $request::$messages);
+                    else if (method_exists($request, $param) && !property_exists($request, 'messages'))
+                        $response = $validation->$validate($request::$param());
+                }
+                break;
+            case 2:
+                $response = $validation->$validate(func_get_arg(0), func_get_arg(1));
+                break;
+            case 3:
+                $response = $validation->$validate(func_get_arg(0), func_get_arg(1), func_get_arg(2));
+                break;
         }
         if ($response['valid'] === true) {
             $this->attributes->set('response_values', $response['values']);
