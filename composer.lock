@@ -412,12 +412,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jetfirephp/jobby.git",
-                "reference": "773aad2e0d8e64c8ddc730c0de7ce409b0cfb0f8"
+                "reference": "096b9d3332801fa70439aab8b560e60b8a605b5a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jetfirephp/jobby/zipball/773aad2e0d8e64c8ddc730c0de7ce409b0cfb0f8",
-                "reference": "773aad2e0d8e64c8ddc730c0de7ce409b0cfb0f8",
+                "url": "https://api.github.com/repos/jetfirephp/jobby/zipball/096b9d3332801fa70439aab8b560e60b8a605b5a",
+                "reference": "096b9d3332801fa70439aab8b560e60b8a605b5a",
                 "shasum": ""
             },
             "require": {
@@ -426,14 +426,10 @@
                 "php": ">=5.4",
                 "symfony/process": "^2.7|^3.0"
             },
-            "require-dev": {
-                "phpunit/phpunit": "^4.6",
-                "symfony/filesystem": "^2.7|^3.0"
-            },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "JetFire\\Jobby\\": "src"
+                    "Jobby\\": "src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -448,7 +444,7 @@
                 }
             ],
             "description": "Manage all your cron jobs without modifying crontab. Handles locking, logging, error emails, and more.",
-            "time": "2016-03-11 14:54:29"
+            "time": "2016-12-14 14:46:57"
         },
         {
             "name": "jetfirephp/mailer",
@@ -456,12 +452,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jetfirephp/mailer.git",
-                "reference": "36d6e2d711a97941b10bf99b587128f6664bd352"
+                "reference": "e18cffa9afff5ea2915d52e6836c6eb73a289a00"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jetfirephp/mailer/zipball/36d6e2d711a97941b10bf99b587128f6664bd352",
-                "reference": "36d6e2d711a97941b10bf99b587128f6664bd352",
+                "url": "https://api.github.com/repos/jetfirephp/mailer/zipball/e18cffa9afff5ea2915d52e6836c6eb73a289a00",
+                "reference": "e18cffa9afff5ea2915d52e6836c6eb73a289a00",
                 "shasum": ""
             },
             "require": {
@@ -494,7 +490,7 @@
                 "phpmailer",
                 "swiftmailer"
             ],
-            "time": "2016-12-02 20:51:58"
+            "time": "2016-12-13 14:39:35"
         },
         {
             "name": "jetfirephp/routing",
@@ -596,12 +592,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/jetfirephp/validation.git",
-                "reference": "2ba9f1b5aaf2d2c74adf4ad61807677ee50ab6eb"
+                "reference": "d695e103b851c53194ceec70a829837264d8ab21"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jetfirephp/validation/zipball/2ba9f1b5aaf2d2c74adf4ad61807677ee50ab6eb",
-                "reference": "2ba9f1b5aaf2d2c74adf4ad61807677ee50ab6eb",
+                "url": "https://api.github.com/repos/jetfirephp/validation/zipball/d695e103b851c53194ceec70a829837264d8ab21",
+                "reference": "d695e103b851c53194ceec70a829837264d8ab21",
                 "shasum": ""
             },
             "require": {
@@ -629,7 +625,7 @@
                 "input validation",
                 "php validation"
             ],
-            "time": "2016-12-06 14:26:18"
+            "time": "2016-12-13 10:55:04"
         },
         {
             "name": "league/plates",
@@ -689,12 +685,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Seldaek/monolog.git",
-                "reference": "fdd6780ffd2f1aa1d7af7d6c69f186bf17d35cd4"
+                "reference": "b732364e70a615231f15944e015b31d0d77bf9f5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/fdd6780ffd2f1aa1d7af7d6c69f186bf17d35cd4",
-                "reference": "fdd6780ffd2f1aa1d7af7d6c69f186bf17d35cd4",
+                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/b732364e70a615231f15944e015b31d0d77bf9f5",
+                "reference": "b732364e70a615231f15944e015b31d0d77bf9f5",
                 "shasum": ""
             },
             "require": {
@@ -759,7 +755,7 @@
                 "logging",
                 "psr-3"
             ],
-            "time": "2016-12-04 18:12:24"
+            "time": "2016-12-13 14:25:55"
         },
         {
             "name": "mtdowling/cron-expression",
@@ -960,12 +956,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/console.git",
-                "reference": "3c2380fcde1e7311afdc20836f4db460f0550427"
+                "reference": "a7a4ffcafcc52a474dd12e391837365a580d33bf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/3c2380fcde1e7311afdc20836f4db460f0550427",
-                "reference": "3c2380fcde1e7311afdc20836f4db460f0550427",
+                "url": "https://api.github.com/repos/symfony/console/zipball/a7a4ffcafcc52a474dd12e391837365a580d33bf",
+                "reference": "a7a4ffcafcc52a474dd12e391837365a580d33bf",
                 "shasum": ""
             },
             "require": {
@@ -1015,7 +1011,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2016-12-08 15:31:48"
+            "time": "2016-12-13 15:32:21"
         },
         {
             "name": "symfony/debug",
@@ -1464,12 +1460,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/var-dumper.git",
-                "reference": "a3c861897142cbbaa55d89754b8850bd5a2cb6ff"
+                "reference": "11cd2e0070b0690c1eec68409ab57d30a83b74fa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/a3c861897142cbbaa55d89754b8850bd5a2cb6ff",
-                "reference": "a3c861897142cbbaa55d89754b8850bd5a2cb6ff",
+                "url": "https://api.github.com/repos/symfony/var-dumper/zipball/11cd2e0070b0690c1eec68409ab57d30a83b74fa",
+                "reference": "11cd2e0070b0690c1eec68409ab57d30a83b74fa",
                 "shasum": ""
             },
             "require": {
@@ -1519,7 +1515,7 @@
                 "debug",
                 "dump"
             ],
-            "time": "2016-12-08 15:31:48"
+            "time": "2016-12-13 09:39:51"
         }
     ],
     "packages-dev": [],
