@@ -64,12 +64,14 @@ class Controller
     {
         $reflectionMethod = new ReflectionMethod($controller, $method);
         $dependencies = [];
-        foreach ($reflectionMethod->getParameters() as $arg) {
-            if (!is_null($arg->getClass())) {
-                if (in_array($arg->getClass()->name, $classInstance))
-                    array_push($dependencies, $classInstanceValues[$arg->getClass()->name]);
-                else
-                    array_push($dependencies, $this->app->get($arg->getClass()->name));
+        if($reflectionMethod->getNumberOfParameters() != count($methodArgs)) {
+            foreach ($reflectionMethod->getParameters() as $arg) {
+                if (!is_null($arg->getClass())) {
+                    if (in_array($arg->getClass()->name, $classInstance))
+                        array_push($dependencies, $classInstanceValues[$arg->getClass()->name]);
+                    else
+                        array_push($dependencies, $this->app->get($arg->getClass()->name));
+                }
             }
         }
         $dependencies = array_merge($dependencies, $methodArgs);
@@ -97,11 +99,13 @@ class Controller
             return $app->get($controller);
         $dependencies = $constructor->getParameters();
         $arguments = [];
-        foreach ($dependencies as $dep) {
-            if (in_array($dep->getClass()->name, $classInstance))
-                array_push($arguments, $classInstanceValues[$dep->getClass()->name]);
-            else
-                array_push($arguments, $app->get($dep->getClass()->name));
+        if($constructor->getNumberOfParameters() != count($ctrlArgs)) {
+            foreach ($dependencies as $dep) {
+                if (in_array($dep->getClass()->name, $classInstance))
+                    array_push($arguments, $classInstanceValues[$dep->getClass()->name]);
+                else
+                    array_push($arguments, $app->get($dep->getClass()->name));
+            }
         }
         $arguments = array_merge($arguments, $ctrlArgs);
         return $reflector->newInstanceArgs($arguments);
