@@ -2,9 +2,6 @@
 
 namespace JetFire\Framework\Providers;
 
-use JetFire\Framework\App;
-
-
 /**
  * Class SessionProvider
  * @package JetFire\Framework\Providers
@@ -32,7 +29,9 @@ class SessionProvider extends Provider
      * @var array
      */
     private $storages = [
-        'Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage' => 'nativeStorage'
+        'Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage' => 'nativeStorage',
+        'Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage' => 'mockStorage',
+        'Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorage' => 'mockStorage'
     ];
 
     /**
@@ -73,6 +72,15 @@ class SessionProvider extends Provider
         if (isset($config['args']))
             return new $config['class']($config['args'], $handler);
         return new $config['class']([], $handler);
+    }
+
+    /**
+     * @param $config
+     * @param $handler
+     * @return mixed
+     */
+    private function mockStorage($config, $handler){
+        return new $config['class'];
     }
 
     /**
