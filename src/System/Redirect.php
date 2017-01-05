@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
  */
 class Redirect extends RedirectResponse
 {
-    
+
     /**
      * @var App
      */
@@ -20,11 +20,11 @@ class Redirect extends RedirectResponse
 
     /**
      * @param App $app
-     * @param int $url
+     * @param $url
      * @param int $status
      * @param array $headers
      */
-    public function __construct(App $app,$url = ROOT, $status = 302, $headers = array())
+    public function __construct(App $app, $url = ROOT, $status = 302, $headers = array())
     {
         $this->app = $app;
         parent::__construct($url, $status, $headers);
@@ -44,7 +44,7 @@ class Redirect extends RedirectResponse
     }
 
     /**
-     * @return Response
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function back()
     {
@@ -56,7 +56,7 @@ class Redirect extends RedirectResponse
      * @param $to
      * @param array $params
      * @param int $code
-     * @return Response
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function to($to, $params = [], $code = 302)
     {
@@ -68,7 +68,7 @@ class Redirect extends RedirectResponse
     /**
      * @param $url
      * @param int $code
-     * @return Response
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function url($url, $code = 302)
     {

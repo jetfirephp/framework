@@ -38,6 +38,17 @@ class Controller
     }
 
     /**
+     *
+     */
+    public function notFound()
+    {
+        $routing = $this->app->get('routing');
+        $routing->getResponse()->setStatusCode(404);
+        $routing->getRouter()->callResponse();
+        exit;
+    }
+
+    /**
      * @param null $to
      * @param array $params
      * @param int $code
