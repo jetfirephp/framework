@@ -67,16 +67,16 @@ class Controller
      * @param array $methodArgs
      * @param array $ctrlArgs
      * @param array $classInstance
-     * @return mixed
+     * @return mixed | null
      * @throws \Exception
      */
     public function callMethod($controller, $method, $methodArgs = [], $ctrlArgs = [], $classInstance = [])
     {
-        $reflectionMethod = new ReflectionMethod($controller, $method);
-        $dependencies = [];
-        if($reflectionMethod->getNumberOfParameters() != count($methodArgs)) {
+        if(class_exists($controller) && method_exists($controller, $method)) {
+            $reflectionMethod = new ReflectionMethod($controller, $method);
+            $dependencies = [];
             foreach ($reflectionMethod->getParameters() as $arg) {
-                if(isset($methodArgs[$arg->name]))
+                if (isset($methodArgs[$arg->name]))
                     array_push($dependencies, $methodArgs[$arg->name]);
                 else if (!is_null($arg->getClass())) {
                     if (isset($classInstance[$arg->getClass()->name]))
@@ -85,9 +85,10 @@ class Controller
                         array_push($dependencies, $this->app->get($arg->getClass()->name));
                 }
             }
+            $dependencies = array_merge($dependencies, $methodArgs);
+            return $reflectionMethod->invokeArgs($this->callController($this->app, $controller, $ctrlArgs, $classInstance), $dependencies);
         }
-        $dependencies = array_merge($dependencies, $methodArgs);
-        return $reflectionMethod->invokeArgs($this->callController($this->app, $controller, $ctrlArgs, $classInstance), $dependencies);
+        return null;
     }
 
     /**
@@ -107,15 +108,13 @@ class Controller
         if (is_null($constructor))
             return $app->get($controller);
         $dependencies = [];
-        if($constructor->getNumberOfParameters() != count($ctrlArgs)) {
-            foreach ($constructor->getParameters() as $arg) {
-                if(isset($ctrlArgs[$arg->name]))
-                    array_push($dependencies, $ctrlArgs[$arg->name]);
-                else if (isset($classInstance[$arg->getClass()->name]))
-                    array_push($dependencies, $classInstance[$arg->getClass()->name]);
-                else
-                    array_push($dependencies, $app->get($arg->getClass()->name));
-            }
+        foreach ($constructor->getParameters() as $arg) {
+            if(isset($ctrlArgs[$arg->name]))
+                array_push($dependencies, $ctrlArgs[$arg->name]);
+            else if (isset($classInstance[$arg->getClass()->name]))
+                array_push($dependencies, $classInstance[$arg->getClass()->name]);
+            else
+                array_push($dependencies, $app->get($arg->getClass()->name));
         }
         $dependencies = array_merge($dependencies, $ctrlArgs);
         return $reflector->newInstanceArgs($dependencies);
