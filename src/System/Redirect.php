@@ -19,15 +19,20 @@ class Redirect extends RedirectResponse
     private $app;
 
     /**
-     * @param App $app
      * @param $url
      * @param int $status
      * @param array $headers
      */
-    public function __construct(App $app, $url = ROOT, $status = 302, $headers = array())
+    public function __construct($url = ROOT, $status = 302, $headers = array())
     {
-        $this->app = $app;
         parent::__construct($url, $status, $headers);
+    }
+
+    /**
+     * @param App $app
+     */
+    public function setApp(App $app){
+        $this->app = $app;
     }
 
     /**

@@ -45,6 +45,9 @@ class ResponseProvider extends Provider{
     public function setRedirectClass($redirect){
         $this->app->addRule($redirect,[
             'shared' => true,
+            'call' => [
+                'setApp' => [$this->app],
+            ]
         ]);
         $this->redirect = $redirect;
     }
