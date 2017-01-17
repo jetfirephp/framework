@@ -104,7 +104,7 @@ class App extends Di
     public function fire()
     {
         try {
-            if ($this->data['config']['system']['maintenance'])
+            if ($this->data['setting']['maintenance'])
                 $this->get('system')->maintenance();
             else {
                 $router = $this->get('routing')->getRouter();

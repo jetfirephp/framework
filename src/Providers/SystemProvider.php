@@ -12,11 +12,30 @@ class SystemProvider extends Provider
 {
 
     /**
+     * @var
+     */
+    private $env;
+
+    /**
+     * @param $env
+     */
+    public function init($env){
+        $this->env = $env;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEnv(){
+        return $this->env;
+    }
+
+    /**
      * @param $debugger
      */
     public function setDebugger($debugger)
     {
-        if ($this->app->data['config']['system']['environment'] == 'prod')
+        if ($this->env == 'prod')
             Kint::enabled(false);
         else {
             if (isset($debugger['mode'])) Kint::enabled($debugger['mode']);
@@ -30,7 +49,7 @@ class SystemProvider extends Provider
     public function handleException($e)
     {
         $this->app->get('logger')->getLogger('main')->addError($e);
-        if ($this->app->data['config']['system']['environment'] == 'prod') {
+        if ($this->env == 'prod') {
             $routing = $this->app->get('routing');
             $routing->getResponse()->setStatusCode(500);
             $routing->getRouter()->callResponse();
@@ -42,7 +61,7 @@ class SystemProvider extends Provider
      */
     public function handleError($error)
     {
-        if($this->app->data['config']['system']['environment'] == 'dev') {
+        if($this->env == 'dev') {
             (isset($error['displays'])) ? error_reporting($error['displays']) : error_reporting(-1);
             ini_set('display_startup_errors', true);
             ini_set('display_errors', 'stdout');

@@ -37,8 +37,8 @@ class Mail extends MailComponent
      */
     public function sendTo($to, $subject, $content, $file = null)
     {
-        $from = (isset($this->app->data['app']['settings']['mail']['from']))
-            ? $this->app->data['app']['settings']['mail']['from']
+        $from = (isset($this->app->data['setting']['mail']['from']))
+            ? $this->app->data['setting']['mail']['from']
             : 'contact@jetfire.fr';
         /** @var MailerInterface $message */
         $message = $this->to($to)

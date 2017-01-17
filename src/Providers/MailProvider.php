@@ -9,7 +9,8 @@ use JetFire\Mailer\MailerInterface;
  * Class MailProvider
  * @package JetFire\Framework\Providers
  */
-class MailProvider extends Provider{
+class MailProvider extends Provider
+{
 
     /**
      * @var
@@ -26,22 +27,25 @@ class MailProvider extends Provider{
 
     /**
      * @param $config
+     * @param $params
      */
-    public function initMailer($config){
+    public function initMailer($config, $params)
+    {
         $this->config = $config;
         $this->mailer = $config['mailers'][$config['use']]['class'];
-        $this->app->addRule($this->mailer,[
+        $this->app->addRule($this->mailer, [
             'shared' => true,
-            'construct' => [array_merge($config['config'],$config['mailers'][$config['use']])]
+            'construct' => [array_merge($params, $config['mailers'][$config['use']])]
         ]);
     }
 
     /**
      * @param $mail
      */
-    public function initMail($mail){
+    public function initMail($mail)
+    {
         $this->mail = $mail;
-        $this->app->addRule($this->mail,[
+        $this->app->addRule($this->mail, [
             'shared' => true,
             'construct' => [$this->app],
             'substitutions' => ['JetFire\Mailer\MailerInterface' => ['instance' => $this->mailer]]
@@ -53,7 +57,8 @@ class MailProvider extends Provider{
      * @param null $key
      * @return mixed
      */
-    public function getConfig($key = null){
+    public function getConfig($key = null)
+    {
         return is_null($key)
             ? $this->config
             : $this->config[$key];
@@ -62,14 +67,16 @@ class MailProvider extends Provider{
     /**
      * @return MailerInterface
      */
-    public function getMailer(){
+    public function getMailer()
+    {
         return $this->app->get($this->mailer);
     }
 
     /**
      * @return Mail
      */
-    public function getMail(){
+    public function getMail()
+    {
         return $this->app->get($this->mail);
     }
 
