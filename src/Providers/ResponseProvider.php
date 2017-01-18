@@ -64,7 +64,7 @@ class ResponseProvider extends Provider{
      */
     public function setViewClass($view){
         $this->app->addRule($view,[
-            'shared' => true,
+            'shared' => true
         ]);
         $this->view = $view;
     }

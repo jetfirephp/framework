@@ -80,8 +80,8 @@ class App extends Di
                     $method = (isset($callbacks['method'])) ? strtoupper($callbacks['method']) : 'GET';
                     $args = (isset($callbacks['args'])) ? array_merge([$value], $callbacks['args']) : [$value];
                     $path = $view->path($callbacks['route'], $args);
-                    $request = $this->get('JetFire\Framework\System\RequestAsync');
-                    ($method == 'GET') ? $request->get($path) : $request->post($path, $value);
+                    $client = $this->get('http')->getClient();
+                    $client->requestAsync($method, $path, ['body' => $value]);
                 }
             }
         }
