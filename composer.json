@@ -23,7 +23,6 @@
         "jetfirephp/mailer": "@dev",
         "jetfirephp/jobby": "@dev",
         "jetfirephp/debugbar": "@dev",
-        "guzzlehttp/guzzle": "~6.2",
         "symfony/console": "~3.0",
         "doctrine/cache": "~1.4",
         "monolog/monolog": "~1.1",
