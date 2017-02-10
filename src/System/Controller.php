@@ -86,27 +86,26 @@ class Controller
                 }
             }
             $dependencies = array_merge($dependencies, $methodArgs);
-            return $reflectionMethod->invokeArgs($this->callController($this->app, $controller, $ctrlArgs, $classInstance), $dependencies);
+            return $reflectionMethod->invokeArgs($this->callController($controller, $ctrlArgs, $classInstance), $dependencies);
         }
         return null;
     }
 
     /**
-     * @param App $app
      * @param $controller
      * @param array $ctrlArgs
      * @param array $classInstance
      * @return object
      * @throws \Exception
      */
-    public function callController($app, $controller, $ctrlArgs = [], $classInstance = [])
+    public function callController($controller, $ctrlArgs = [], $classInstance = [])
     {
         $reflector = new ReflectionClass($controller);
         if (!$reflector->isInstantiable())
             throw new \Exception('Controller [' . $controller . '] is not instantiable.');
         $constructor = $reflector->getConstructor();
         if (is_null($constructor))
-            return $app->get($controller);
+            return $this->app->get($controller);
         $dependencies = [];
         foreach ($constructor->getParameters() as $arg) {
             if(isset($ctrlArgs[$arg->name]))
@@ -114,7 +113,7 @@ class Controller
             else if (isset($classInstance[$arg->getClass()->name]))
                 array_push($dependencies, $classInstance[$arg->getClass()->name]);
             else
-                array_push($dependencies, $app->get($arg->getClass()->name));
+                array_push($dependencies, $this->app->get($arg->getClass()->name));
         }
         $dependencies = array_merge($dependencies, $ctrlArgs);
         return $reflector->newInstanceArgs($dependencies);

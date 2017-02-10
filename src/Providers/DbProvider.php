@@ -7,7 +7,7 @@ use JetFire\Db\Doctrine\DoctrineConstructor;
 use JetFire\Db\Model;
 use JetFire\Db\Pdo\PdoConstructor;
 use JetFire\Db\RedBean\RedBeanConstructor;
-use JetFire\Framework\App;
+use JetFire\Framework\System\Controller;
 
 /**
  * Class DbProvider
@@ -79,13 +79,35 @@ class DbProvider extends Provider
             case 'doctrine':
                 return [
                     'cache' => $this->app->get('cache')->getCache($this->ormCollection['drivers']['doctrine']['cache']),
-                    'functions' => $this->ormCollection['drivers']['doctrine']['functions']
+                    'functions' => $this->ormCollection['drivers']['doctrine']['functions'],
+                    'events' => $this->getDoctrineEvents($this->ormCollection['drivers']['doctrine']['events']),
                 ];
                 break;
         }
         return [];
     }
 
+    /**
+     * @param array $events
+     * @return array
+     */
+    private function getDoctrineEvents($events = []){
+        /** @var Controller $controller */
+        $controller = $this->app->get('JetFire\Framework\System\Controller');
+        if(isset($events['listeners']) && is_array($events['listeners'])) {
+            foreach ($events['listeners'] as $key => $listener) {
+                if (is_array($listener) && isset($listener[1])) {
+                    $events['listeners'][$key][1] = $controller->callController($listener);
+                }
+            }
+        }
+        if(isset($events['subscribers']) && is_array($events['subscribers'])) {
+            foreach ($events['subscribers'] as $key => $subscriber) {
+                $events['subscribers'][$key] = $controller->callController($subscriber);
+            }
+        }
+        return $events;
+    }
 
     /**
      * @param array $default
