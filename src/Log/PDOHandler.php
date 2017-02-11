@@ -67,7 +67,7 @@ class PDOHandler extends AbstractProcessingHandler
     {
         $this->pdo->exec(
             'CREATE TABLE IF NOT EXISTS `'.$this->table.'` '
-            .'(channel VARCHAR(255), level INTEGER, message LONGTEXT, date DATETIME)'
+            .'(id INTEGER PRIMARY KEY AUTO_INCREMENT, channel VARCHAR(255),level_name VARCHAR(255), level INTEGER, message LONGTEXT, date DATETIME)'
         );
         //Read out actual columns
         $actualFields = array();
@@ -80,7 +80,7 @@ class PDOHandler extends AbstractProcessingHandler
         $removedColumns = array_diff(
             $actualFields,
             $this->additionalFields,
-            array('channel', 'level', 'message', 'date')
+            array('id', 'channel', 'level','level_name', 'message', 'date')
         );
         $addedColumns = array_diff($this->additionalFields, $actualFields);
         //Remove columns
@@ -103,8 +103,8 @@ class PDOHandler extends AbstractProcessingHandler
             $fields.= ", :$f";
         }
         $this->statement = $this->pdo->prepare(
-            'INSERT INTO `'.$this->table.'` (channel, level, message, date'.$columns.')
-            VALUES (:channel, :level, :message, :date'.$fields.')'
+            'INSERT INTO `'.$this->table.'` (channel, level, level_name, message, date'.$columns.')
+            VALUES (:channel, :level, :level_name, :message, :date'.$fields.')'
         );
         $this->initialized = true;
     }
@@ -123,6 +123,7 @@ class PDOHandler extends AbstractProcessingHandler
         $contentArray = array_merge(array(
             'channel' => $record['channel'],
             'level' => $record['level'],
+            'level_name' => $record['level_name'],
             'message' => $record['message'],
             'date' => $record['datetime']->format('Y-m-d H:i:s')
         ), $record['context']);
