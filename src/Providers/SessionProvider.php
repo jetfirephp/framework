@@ -20,9 +20,7 @@ class SessionProvider extends Provider
     private $handlers = [
         'Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeSessionHandler' => 'nativeHandler',
         'Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHandler' => 'fileHandler',
-        'Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler' => 'pdoHandler',
-        'Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcacheSessionHandler' => 'memcacheHandler',
-        'Symfony\Component\HttpFoundation\Session\Storage\Handler\MemcachedSessionHandler' => 'memcachedHandler',
+        'Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler' => 'pdoHandler'
     ];
 
     /**
@@ -37,10 +35,21 @@ class SessionProvider extends Provider
     /**
      * @param array $config
      * @param $env
+     * @throws \Exception
      */
     public function init($config = [], $env)
     {
-        $handler = call_user_func_array([$this, $this->handlers[$config['handlers'][$config[$env]['handler']]['class']]], [$config['handlers'][$config[$env]['handler']]]);
+        $handler = null;
+        if (isset($this->handlers[$config['handlers'][$config[$env]['handler']]['class']])) {
+            $handler = call_user_func_array([$this, $this->handlers[$config['handlers'][$config[$env]['handler']]['class']]], [$config['handlers'][$config[$env]['handler']]]);
+        } elseif (isset($config['handlers'][$config[$env]['handler']]['callback'])) {
+            $callback = $config['handlers'][$config[$env]['handler']]['callback'];
+            if (!$this->app->has($callback))
+                throw new \Exception('Callback : ' . $callback . ' not found in DI.');
+            if (!method_exists(($provider = $this->app->get($callback)), 'getHandler'))
+                throw new \Exception('Method "getHandler" not found in ' . get_class($provider));
+            $handler = $provider->getHandler($config['handlers'][$config[$env]['handler']]);
+        }
         $storage = call_user_func_array([$this, $this->storages[$config['storages'][$config[$env]['storage']]['class']]], [$config['storages'][$config[$env]['storage']], $handler]);
         $this->session = new $config['class']($storage);
         $this->app->register($this->session);
@@ -79,7 +88,8 @@ class SessionProvider extends Provider
      * @param $handler
      * @return mixed
      */
-    private function mockStorage($config, $handler){
+    private function mockStorage($config, $handler)
+    {
         return new $config['class'];
     }
 
@@ -124,28 +134,5 @@ class SessionProvider extends Provider
         }
         return new $config['class']($config['args'][0], $config['args'][1]);
     }
-
-    /**
-     * @param $config
-     * @return mixed
-     */
-    private function memcacheHandler($config)
-    {
-        if (!isset($config['args']) || !isset($config['args'][0]) || !isset($config['args'][1]))
-            throw new \InvalidArgumentException('Arguments expected for session memcache handler.');
-        return new $config['class']($this->app->get($config['args'][0]), $config['args'][1]);
-    }
-
-    /**
-     * @param $config
-     * @return mixed
-     */
-    private function memcachedHandler($config)
-    {
-        if (!isset($config['args']) || !isset($config['args'][0]) || !isset($config['args'][1]))
-            throw new \InvalidArgumentException('Arguments expected for session memcached handler.');
-        return new $config['class']($this->app->get($config['args'][0]), $config['args'][1]);
-    }
-
 
 } 
