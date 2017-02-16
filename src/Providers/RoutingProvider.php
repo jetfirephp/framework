@@ -2,7 +2,6 @@
 
 namespace JetFire\Framework\Providers;
 
-use JetFire\Framework\App;
 use JetFire\Routing\Matcher\MatcherInterface;
 use JetFire\Routing\Route;
 use JetFire\Routing\RouteCollection;

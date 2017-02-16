@@ -1,8 +1,8 @@
 <?php
 
 namespace JetFire\Framework\Providers;
+
 use DebugBar\Bridge\Twig\TwigProfilerDumperHtml;
-use JetFire\Framework\App;
 use Twig_Extension_Profiler;
 use Twig_Profiler_Profile;
 

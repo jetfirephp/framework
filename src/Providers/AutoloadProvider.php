@@ -4,7 +4,6 @@ namespace JetFire\Framework\Providers;
 
 
 use JetFire\Autoloader\Autoload;
-use JetFire\Framework\App;
 
 /**
  * Class AutoloadProvider

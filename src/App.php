@@ -3,7 +3,6 @@
 namespace JetFire\Framework;
 
 use JetFire\Di\Di;
-use JetFire\Framework\System\Controller;
 
 /**
  * Class App
@@ -55,36 +54,6 @@ class App extends Di
         foreach ($this->config['include_files'] as $key => $file)
             if (file_exists($file)) $this->data[$key] = include $file;
         $this->addRules($this->config['providers'], $this->data);
-    }
-
-    /**
-     * @param $event
-     * @param $value
-     */
-    public function emit($event, $value)
-    {
-        if (isset($this->data['app']['events']) && isset($this->data['app']['events'][$event])) {
-            $event = $this->data['app']['events'][$event];
-            if (!is_array($event)) $event = [$event];
-            if (!is_array($value)) $value = [$value];
-            /** @var Controller $controller */
-            $controller = $this->get('JetFire\Framework\System\Controller');
-            foreach ($event as $callbacks) {
-                if ($callbacks['type'] == 'linear' && isset($callbacks['callback'])) {
-                    $callback = explode('@', $callbacks['callback']);
-                    if (class_exists($callback[0]) && method_exists($callback[0], $callback[1])) {
-                        $controller->callMethod($callback[0], $callback[1], $value);
-                    }
-                } elseif ($callbacks['type'] == 'async' && isset($callbacks['route'])) {
-                    $view = $this->get('response')->getView();
-                    $method = (isset($callbacks['method'])) ? strtoupper($callbacks['method']) : 'GET';
-                    $args = (isset($callbacks['args'])) ? $callbacks['args'] : [];
-                    $path = $view->path($callbacks['route'], $args);
-                    $request = $this->get('JetFire\Framework\System\RequestAsync');
-                    ($method == 'GET') ? $request->get($path) : $request->post($path, $value);
-                }
-            }
-        }
     }
 
     /**

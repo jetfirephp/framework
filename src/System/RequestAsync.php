@@ -12,15 +12,16 @@ class RequestAsync
     /**
      * @param $address
      * @param array $data
+     * @param array $options
      */
-    public function get($address, $data = [])
+    public function get($address, $data = [], $options = [])
     {
         $post_params = [];
         $errno = '';
         $errstr = '';
         foreach ($data as $key => &$val) {
             if (is_array($val)) $val = implode(',', $val);
-            $post_params[] = $key.'='.urlencode($val);
+            $post_params[] = $key . '=' . urlencode($val);
         }
         $post_string = implode('&', $post_params);
 
@@ -30,10 +31,12 @@ class RequestAsync
 
         $url['path'] .= '?' . $post_string;
 
-        $out = "POST " . $url['path'] . " HTTP/1.1\r\n";
+        $out = "GET " . $url['path'] . " HTTP/1.1\r\n";
         $out .= "Host: " . $url['host'] . "\r\n";
         $out .= "Content-Type: application/x-www-form-urlencoded\r\n";
         $out .= "Content-Length: " . strlen($post_string) . "\r\n";
+        foreach ($options as $key => $value)
+            $out .= $key . ':' . $value . "\r\n";
         $out .= "Connection: Close\r\n\r\n";
 
         fwrite($fp, $out);
@@ -42,16 +45,17 @@ class RequestAsync
 
     /**
      * @param $address
-     * @param $data
+     * @param array $data
+     * @param array $options
      */
-    public function post($address, $data = [])
+    public function post($address, $data = [], $options = [])
     {
         $post_params = [];
         $errno = '';
         $errstr = '';
         foreach ($data as $key => &$val) {
             if (is_array($val)) $val = implode(',', $val);
-            $post_params[] = $key.'='.urlencode($val);
+            $post_params[] = $key . '=' . urlencode($val);
         }
         $post_string = implode('&', $post_params);
 
@@ -63,7 +67,10 @@ class RequestAsync
         $out .= "Host: " . $url['host'] . "\r\n";
         $out .= "Content-Type: application/x-www-form-urlencoded\r\n";
         $out .= "Content-Length: " . strlen($post_string) . "\r\n";
+        foreach ($options as $key => $value)
+            $out .= $key . ':' . $value . "\r\n";
         $out .= "Connection: Close\r\n\r\n";
+
         if (isset($post_string)) $out .= $post_string;
 
         fwrite($fp, $out);

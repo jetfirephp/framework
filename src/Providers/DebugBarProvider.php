@@ -6,7 +6,6 @@ use DebugBar\Bridge\DoctrineCollector;
 use DebugBar\Bridge\Twig\TwigCollector;
 use DebugBar\Bridge\Twig\TwigProfilerDumperHtml;
 use DebugBar\StandardDebugBar;
-use JetFire\Framework\App;
 use Twig_Profiler_Profile;
 
 /**
