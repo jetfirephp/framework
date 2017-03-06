@@ -37,7 +37,7 @@ class CacheProvider extends Provider
     public function init($config = [], $env)
     {
         $this->config = $config;
-        $this->cache = call_user_func_array([$this, $this->cacheDrivers[$config['drivers'][$config[$env]]['class']]], [$config['drivers'][$config[$env]]]);
+        $this->cache = $this->getCache($config[$env]);
         $this->app->addAlias($config[$env], $config['drivers'][$config[$env]]['class']);
     }
 
@@ -51,14 +51,14 @@ class CacheProvider extends Provider
         if (is_null($key)) {
             return $this->cache;
         }elseif (isset($this->cacheDrivers[$this->config['drivers'][$key]['class']])) {
-            return $this->cache = call_user_func_array([$this, $this->cacheDrivers[$this->config['drivers'][$key]['class']]], [$this->config['drivers'][$key]]);
+            return call_user_func_array([$this, $this->cacheDrivers[$this->config['drivers'][$key]['class']]], [$this->config['drivers'][$key]]);
         } elseif (isset($this->config['drivers'][$key]['callback'])) {
             $callback = $this->config['drivers'][$key]['callback'];
             if (!$this->app->has($callback))
                 throw new \Exception('Callback : ' . $callback . ' not found in DI.');
             if (!method_exists(($provider = $this->app->get($callback)), 'getCache'))
                 throw new \Exception('Method "getCache" not found in ' . get_class($provider));
-            return $this->cache = $provider->getCache($this->config['drivers'][$key]);
+            return $provider->getCache($this->config['drivers'][$key]);
         }
         return null;
     }
