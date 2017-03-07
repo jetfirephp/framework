@@ -78,7 +78,7 @@ class DbProvider extends Provider
         switch ($orm) {
             case 'doctrine':
                 return [
-                    'cache' => $this->app->get('cache')->getCache($this->ormCollection['drivers']['doctrine']['cache']),
+                    'cache' => ($this->env == 'prod') ? $this->app->get('cache')->getCache($this->ormCollection['drivers']['doctrine']['cache']) : null,
                     'functions' => $this->ormCollection['drivers']['doctrine']['functions'],
                     'events' => $this->getDoctrineEvents($this->ormCollection['drivers']['doctrine']['events']),
                 ];
