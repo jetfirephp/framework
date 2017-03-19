@@ -52,8 +52,31 @@ class App extends Di
         foreach ($this->config['required_files'] as $file)
             if (file_exists($file)) require $file;
         foreach ($this->config['include_files'] as $key => $file)
-            if (file_exists($file)) $this->data[$key] = include $file;
+            if (file_exists($file)) $this->data[$key] = $this->parseFile($file);
         $this->addRules($this->config['providers'], $this->data);
+    }
+
+    /**
+     * @param $file
+     * @return mixed
+     */
+    private function parseFile($file){
+        $ext = explode('.', $file);
+        switch (end($ext)){
+            case 'php':
+                return include $file;
+                break;
+            case 'json':
+                $json = file_get_contents($file);
+                return json_decode($json, true);
+                break;
+            case 'xml':
+                $xml = simplexml_load_file($file);
+                $xml_array = unserialize(serialize(json_decode(json_encode((array) $xml), 1)));
+                return $xml_array;
+                break;
+        }
+        return $file;
     }
 
     /**
