@@ -17,7 +17,7 @@ class CronProvider extends Provider
     /**
      * @var Jobby
      */
-    private $jobby;
+    protected $jobby;
 
     /**
      * @param RouteCollection $collection

@@ -23,15 +23,15 @@ class DbProvider extends Provider
     /**
      * @var
      */
-    private $db;
+    protected $db;
     /**
      * @var string
      */
-    private $env;
+    protected $env;
     /**
      * @var
      */
-    private $ormCollection;
+    protected $ormCollection;
 
     /**
      * @param array $ormCollection

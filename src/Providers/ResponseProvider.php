@@ -12,15 +12,15 @@ class ResponseProvider extends Provider{
     /**
      * @var
      */
-    private $response;
+    protected $response;
     /**
      * @var
      */
-    private $redirect;
+    protected $redirect;
     /**
      * @var
      */
-    private $view;
+    protected $view;
 
     /**
      * @param $response

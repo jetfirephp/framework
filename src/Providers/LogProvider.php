@@ -17,7 +17,7 @@ class LogProvider extends Provider
     /**
      * @var array
      */
-    private $level = [
+    protected $level = [
         'DEBUG' => 100,
         'INFO' => 200,
         'NOTICE' => 250,
@@ -31,7 +31,7 @@ class LogProvider extends Provider
     /**
      * @var array
      */
-    private $callHandlerMethod = [
+    protected $callHandlerMethod = [
         'Monolog\Handler\StreamHandler' => 'getStreamHandler',
         'Monolog\Handler\RotatingFileHandler' => 'getRotatingFileHandler',
         'Monolog\Handler\NativeMailHandler' => 'getNativeMailHandler',
@@ -43,19 +43,19 @@ class LogProvider extends Provider
     /**
      * @var array
      */
-    private $setup = [];
+    protected $setup = [];
     /**
      * @var array
      */
-    private $loggers = [];
+    protected $loggers = [];
     /**
      * @var array
      */
-    private $default = [];
+    protected $default = [];
     /**
      * @var
      */
-    private $config;
+    protected $config;
 
     /**
      * @param $config

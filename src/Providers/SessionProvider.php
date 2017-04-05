@@ -12,12 +12,12 @@ class SessionProvider extends Provider
     /**
      * @var mixed
      */
-    private $session;
+    protected $session;
 
     /**
      * @var array
      */
-    private $handlers = [
+    protected $handlers = [
         'Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeSessionHandler' => 'nativeHandler',
         'Symfony\Component\HttpFoundation\Session\Storage\Handler\NativeFileSessionHandler' => 'fileHandler',
         'Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler' => 'pdoHandler'
@@ -26,7 +26,7 @@ class SessionProvider extends Provider
     /**
      * @var array
      */
-    private $storages = [
+    protected $storages = [
         'Symfony\Component\HttpFoundation\Session\Storage\NativeSessionStorage' => 'nativeStorage',
         'Symfony\Component\HttpFoundation\Session\Storage\MockArraySessionStorage' => 'mockStorage',
         'Symfony\Component\HttpFoundation\Session\Storage\MockFileSessionStorage' => 'mockStorage'
@@ -76,7 +76,7 @@ class SessionProvider extends Provider
      * @param $handler
      * @return mixed
      */
-    private function nativeStorage($config, $handler)
+    protected function nativeStorage($config, $handler)
     {
         if (isset($config['args']))
             return new $config['class']($config['args'], $handler);
@@ -88,7 +88,7 @@ class SessionProvider extends Provider
      * @param $handler
      * @return mixed
      */
-    private function mockStorage($config, $handler)
+    protected function mockStorage($config, $handler)
     {
         return new $config['class'];
     }
@@ -97,7 +97,7 @@ class SessionProvider extends Provider
      * @param $config
      * @return mixed
      */
-    private function nativeHandler($config)
+    protected function nativeHandler($config)
     {
         return new $config['class'];
     }
@@ -106,7 +106,7 @@ class SessionProvider extends Provider
      * @param $config
      * @return mixed
      */
-    private function fileHandler($config)
+    protected function fileHandler($config)
     {
         if (isset($config['args']) && isset($config['args'][0]))
             return new $config['class']($config['args'][0]);
@@ -117,7 +117,7 @@ class SessionProvider extends Provider
      * @param $config
      * @return mixed
      */
-    private function pdoHandler($config)
+    protected function pdoHandler($config)
     {
         $db = $this->app->get('database');
         $params = $db->getParams();

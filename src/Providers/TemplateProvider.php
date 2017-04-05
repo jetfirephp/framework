@@ -23,12 +23,12 @@ class TemplateProvider extends Provider{
     /**
      * @var
      */
-    private $env;
+    protected $env;
 
     /**
      * @var mixed
      */
-    private $engine;
+    protected $engine;
 
     /**
      * @param array $template

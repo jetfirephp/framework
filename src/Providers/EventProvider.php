@@ -15,13 +15,19 @@ class EventProvider extends Provider
     /**
      * @var array
      */
-    private $options = [];
+    protected $events = [];
+    /**
+     * @var array
+     */
+    protected $options = [];
 
     /**
+     * @param array $events
      * @param array $options
      */
-    public function setAsyncOptions($options = [])
+    public function init($events = [], $options = [])
     {
+        $this->events = $events;
         $this->options = $options;
     }
 
@@ -31,9 +37,8 @@ class EventProvider extends Provider
      */
     public function emit($event, $value)
     {
-        $data = $this->app->data;
-        if (isset($data['app']['events']) && isset($data['app']['events'][$event])) {
-            $event = $data['app']['events'][$event];
+        if (isset($this->events[$event])) {
+            $event = $this->events[$event];
             if (!is_array($event)) $event = [$event];
             if (!is_array($value)) $value = [$value];
             /** @var Controller $controller */

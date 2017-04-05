@@ -14,15 +14,15 @@ class CacheProvider extends Provider
     /**
      * @var array
      */
-    private $config;
+    protected $config;
     /**
      * @var mixed
      */
-    private $cache;
+    protected $cache;
     /**
      * @var array
      */
-    private $cacheDrivers = [
+    protected $cacheDrivers = [
         'Doctrine\Common\Cache\ArrayCache' => 'getNativeCache',
         'Doctrine\Common\Cache\ApcCache' => 'getNativeCache',
         'Doctrine\Common\Cache\XcacheCache' => 'getNativeCache',

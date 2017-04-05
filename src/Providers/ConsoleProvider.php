@@ -20,11 +20,11 @@ class ConsoleProvider extends Provider
     /**
      * @var Application
      */
-    private $cli;
+    protected $cli;
     /**
      * @var
      */
-    private $commands;
+    protected $commands;
 
     /**
      * ConsoleProvider constructor.

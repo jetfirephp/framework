@@ -14,7 +14,7 @@ class SystemProvider extends Provider
     /**
      * @var
      */
-    private $env;
+    protected $env;
 
     /**
      * @param $env

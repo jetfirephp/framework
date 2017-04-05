@@ -17,11 +17,11 @@ class DebugBarProvider extends Provider{
     /**
      * @var StandardDebugBar
      */
-    private $debugBar;
+    protected $debugBar;
     /**
      * @var \DebugBar\JavascriptRenderer
      */
-    private $debugBarRenderer;
+    protected $debugBarRenderer;
 
     /**
      * DebugBarProvider constructor.

@@ -14,7 +14,7 @@ class AutoloadProvider extends Provider{
     /**
      * @var Autoload
      */
-    private $loader;
+    protected $loader;
 
     /**
      * AutoloadProvider constructor.
