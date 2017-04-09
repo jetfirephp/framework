@@ -27,6 +27,14 @@ class ConsoleProvider extends Provider
     protected $commands;
 
     /**
+     * @return Application
+     */
+    public function getCli()
+    {
+        return $this->cli;
+    }
+
+    /**
      * ConsoleProvider constructor.
      * @param Application $cli
      * @param array $commands
@@ -42,7 +50,7 @@ class ConsoleProvider extends Provider
      */
     public function ormCommands($orm)
     {
-        if(is_array($orm)) foreach ($orm as $o) call_user_func_array([$this,$o.'Commands'],[]);
+        if (is_array($orm)) foreach ($orm as $o) call_user_func_array([$this, $o . 'Commands'], []);
 
         $this->setCommands();
     }
@@ -50,21 +58,24 @@ class ConsoleProvider extends Provider
     /**
      *
      */
-    private function pdoCommands(){
+    private function pdoCommands()
+    {
 
     }
 
     /**
      *
      */
-    private function redbeanCommands(){
+    private function redbeanCommands()
+    {
 
     }
 
     /**
      *
      */
-    private function doctrineCommands(){
+    private function doctrineCommands()
+    {
         /** @var EntityManager $em */
         $em = Model::orm('doctrine')->getOrm();
         $helperSet = new HelperSet([
@@ -80,7 +91,8 @@ class ConsoleProvider extends Provider
     /**
      *
      */
-    private function setCommands(){
+    private function setCommands()
+    {
         foreach ($this->commands['di'] as $command)
             $this->cli->add($this->app->get($command));
         foreach ($this->commands['new'] as $instance)
