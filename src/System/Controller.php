@@ -28,6 +28,14 @@ class Controller
     }
 
     /**
+     * @return App
+     */
+    public function getApp()
+    {
+        return $this->app;
+    }
+
+    /**
      * @param $path
      * @param array $data
      * @return mixed
@@ -72,7 +80,7 @@ class Controller
      */
     public function callMethod($controller, $method, $methodArgs = [], $ctrlArgs = [], $classInstance = [])
     {
-        if(class_exists($controller) && method_exists($controller, $method)) {
+        if (class_exists($controller) && method_exists($controller, $method)) {
             $reflectionMethod = new ReflectionMethod($controller, $method);
             $dependencies = [];
             foreach ($reflectionMethod->getParameters() as $arg) {
@@ -108,7 +116,7 @@ class Controller
             return $this->app->get($controller);
         $dependencies = [];
         foreach ($constructor->getParameters() as $arg) {
-            if(isset($ctrlArgs[$arg->name]))
+            if (isset($ctrlArgs[$arg->name]))
                 array_push($dependencies, $ctrlArgs[$arg->name]);
             else if (isset($classInstance[$arg->getClass()->name]))
                 array_push($dependencies, $classInstance[$arg->getClass()->name]);
