@@ -2,10 +2,9 @@
 
 namespace JetFire\Framework\Providers;
 
+use JetFire\Framework\System\Controller;
 use JetFire\Framework\System\View;
 use Jobby\Jobby;
-use JetFire\Routing\RouteCollection;
-use JetFire\Routing\Router;
 
 /**
  * Class CronProvider
@@ -20,33 +19,56 @@ class CronProvider extends Provider
     protected $jobby;
 
     /**
-     * @param RouteCollection $collection
+     * @var View
+     */
+    protected $view;
+
+    /**
+     * @var array
+     */
+    protected $stream = [
+        'http' => [
+            'method' => 'GET'
+        ]
+    ];
+
+    /**
      * @param View $view
      * @param Jobby $jobby
-     * @param array $cron
      */
-    public function init(RouteCollection $collection, View $view, Jobby $jobby, $cron = [])
+    public function init(View $view, Jobby $jobby)
     {
         $this->jobby = $jobby;
+        $this->view = $view;
+    }
+
+    /**
+     * @param array $cron
+     */
+    public function setCron($cron = [])
+    {
         foreach ($cron as $name => $job) {
-            if (isset($job['controller']))
-                $job['closure'] = $this->getClosure($job, $collection);
-            elseif (isset($job['file']))
+            if (isset($job['controller'])) {
+                $job['closure'] = $this->callController($job);
+            } elseif (isset($job['file'])) {
                 $job['closure'] = function () use ($job) {
                     require $job['file'];
                 };
-            elseif (isset($job['route'])) {
-                $route = array_merge(['name' => '', 'arguments' => [], 'subdomain' => ''], $job['route']);
-                $path = $view->path($route['name'], $route['arguments'], $route['subdomain']);
-                $job['closure'] = function () use ($path) {
-                    echo file_get_contents($path);
-                    return true;
-                };;
+            } elseif (isset($job['route'])) {
+                $job['closure'] = $this->callRoute($job);
             }
             if (!isset($job['output']))
                 $job['output'] = ROOT . '/storage/cron/command.log';
             $this->jobby->add($name, $job);
         }
+    }
+
+    /**
+     * @param array $stream
+     */
+    public function setStream($stream = [])
+    {
+        $this->stream = array_merge_recursive($this->stream, $stream);
     }
 
     /**
@@ -59,27 +81,35 @@ class CronProvider extends Provider
 
     /**
      * @param $job
-     * @param $collection
-     * @return callable
+     * @return \Closure
      */
-    private function getClosure($job, RouteCollection $collection)
+    private function callController($job)
     {
-        $collection->addRoutes([
-            '/' => [
-                'use' => $job['controller'],
-                'ajax' => (isset($job['ajax']) && $job['ajax']) ? true : false
-            ]
-        ], [
-            'path' => ROOT . '/Views',
-            'namespace' => '',
-        ]);
-        $router = new Router($collection);
-        $router->setUrl('/');
-        $router->match();
-        return function () use ($router) {
-            $router->callTarget();
-            $router->response->sendContent();
-        };
+        /** @var Controller $controller */
+        $controller = $this->app->get('JetFire\Framework\System\Controller');
+        $callback = explode('@', $job['closure']);
+        if (isset($callback[1])) {
+            $args = isset($job['args']) ? $job['args'] : [];
+            return function () use ($controller, $callback, $args) {
+                $controller->callMethod($callback[0], $callback[1], $args);
+            };
+        }
+        return function () {};
     }
 
+    /**
+     * @param $job
+     * @return \Closure
+     */
+    private function callRoute($job)
+    {
+        $route = array_merge(['name' => '', 'arguments' => [], 'subdomain' => ''], $job['route']);
+        $path = $this->view->path($route['name'], $route['arguments'], $route['subdomain']);
+        $stream = $this->stream;
+        return function () use ($path, $stream) {
+            $context = stream_context_create($stream);
+            file_get_contents($path, false, $context);
+            return true;
+        };
+    }
 } 
