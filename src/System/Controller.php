@@ -46,7 +46,7 @@ class Controller
     }
 
     /**
-     *
+     * @return mixed
      */
     public function notFound()
     {

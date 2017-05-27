@@ -147,11 +147,7 @@ class LogProvider extends Provider
      */
     private function getStreamHandler($params)
     {
-        $this->app->addRule($params['class'], [
-            'shared' => true,
-            'construct' => [$params['stream'], $this->level[$params['level']]]
-        ]);
-        return $this->app->get($params['class']);
+        return new $params['class']($params['stream'], $this->level[$params['level']]);
     }
 
     /**
@@ -160,15 +156,8 @@ class LogProvider extends Provider
      */
     private function getRotatingFileHandler($params)
     {
-        $this->app->addRule($params['class'], [
-            'shared' => true,
-            'construct' => [
-                $params['stream'],
-                isset($params['max_files']) ? $params['max_files'] : 0,
-                $this->level[$params['level']]
-            ]
-        ]);
-        return $this->app->get($params['class']);
+        $max = isset($params['max_files']) ? $params['max_files'] : 0;
+        return new $params['class']($params['stream'], $max, $this->level[$params['level']]);
     }
 
     /**
@@ -177,16 +166,7 @@ class LogProvider extends Provider
      */
     private function getNativeMailHandler($params)
     {
-        $this->app->addRule($params['class'], [
-            'shared' => true,
-            'construct' => [
-                $params['to'],
-                $params['subject'],
-                $params['from'],
-                $this->level[$params['level']]
-            ]
-        ]);
-        return $this->app->get($params['class']);
+        return new $params['class']($params['to'], $params['subject'], $params['from'], $this->level[$params['level']]);
     }
 
     /**
@@ -199,15 +179,7 @@ class LogProvider extends Provider
         $mail = $this->app->get('mail')->getMailer();
         if (!$mail instanceof SwiftMailer)
             throw new \Exception('Instance of JetFire\Mailer\SwiftMailer\SwiftMailer is required for getSwiftMailerHandler method');
-        $this->app->addRule($params['class'], [
-            'shared' => true,
-            'construct' => [
-                $mail->getMailer(),
-                $mail->getMail(),
-                $this->level[$params['level']]
-            ]
-        ]);
-        return $this->app->get($params['class']);
+        return new $params['class']($mail->getMailer(), $mail->getMail(), $this->level[$params['level']]);
     }
 
     /**
@@ -238,9 +210,6 @@ class LogProvider extends Provider
      */
     private function getHandler($params)
     {
-        $this->app->addRule($params['class'], [
-            'shared' => true,
-        ]);
-        return $this->app->get($params['class']);
+        return new $params['class']();
     }
 } 
