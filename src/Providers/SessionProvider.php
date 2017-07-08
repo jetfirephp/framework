@@ -35,10 +35,12 @@ class SessionProvider extends Provider
     /**
      * @param array $config
      * @param $env
+     * @param array $options
      * @throws \Exception
      */
-    public function init($config = [], $env)
+    public function init($config = [], $env, $options = [])
     {
+        if(is_array($options)) $config = array_merge_recursive($options, $config);
         $handler = null;
         if (isset($this->handlers[$config['handlers'][$config[$env]['handler']]['class']])) {
             $handler = call_user_func_array([$this, $this->handlers[$config['handlers'][$config[$env]['handler']]['class']]], [$config['handlers'][$config[$env]['handler']]]);
