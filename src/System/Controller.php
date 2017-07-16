@@ -72,9 +72,9 @@ class Controller
      */
     public function redirect($to = null, $params = [], $code = 302)
     {
-        if (is_null($to))
-            return $this->app->get('response')->getRedirect();
-        return $this->app->get('response')->getRedirect()->to($to, $params, $code);
+        return (is_null($to))
+            ? $this->app->get('response')->getRedirect()
+            : $this->app->get('response')->getRedirect()->to($to, $params, $code);
     }
 
     /**

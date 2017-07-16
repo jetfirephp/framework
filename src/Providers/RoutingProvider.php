@@ -3,6 +3,7 @@
 namespace JetFire\Framework\Providers;
 
 use JetFire\Routing\Matcher\MatcherInterface;
+use JetFire\Routing\MiddlewareInterface;
 use JetFire\Routing\Route;
 use JetFire\Routing\RouteCollection;
 use JetFire\Routing\Router;
@@ -22,6 +23,10 @@ class RoutingProvider extends Provider
      * @var RouteCollection
      */
     protected $collection;
+    /**
+     * @var MiddlewareInterface
+     */
+    protected $middleware;
 
     /**
      * @param RouteCollection $collection
@@ -57,12 +62,9 @@ class RoutingProvider extends Provider
 
     /**
      * @param $routes
-     * @param array $middleware
      */
-    public function setRoutes($routes, $middleware = [])
+    public function setRoutes($routes)
     {
-        if (!empty($middleware) && is_array($middleware))
-            $this->collection->setMiddleware($middleware);
         foreach ($routes as $key => $block) {
             if (is_array($block)) {
                 $path = (substr($block['path'], -4) == '.php') ? $block['path'] : rtrim($block['path'], '/') . '/routes.php';
@@ -99,6 +101,19 @@ class RoutingProvider extends Provider
             'generateRoutesPath' => $router['generateRoutePath']
         ]);
         $this->router->setResponses($responses);
+    }
+
+    /**
+     * @param $class
+     * @param array $beforeRules
+     * @param array $afterRules
+     */
+    public function setMiddleware($class, $beforeRules = [], $afterRules = [])
+    {
+        $this->middleware = new $class($this->router);
+        $this->middleware->setBeforeCallback($beforeRules);
+        $this->middleware->setAfterCallback($afterRules);
+        $this->router->addMiddleware($this->middleware);
     }
 
     /**

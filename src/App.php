@@ -3,6 +3,7 @@
 namespace JetFire\Framework;
 
 use JetFire\Di\Di;
+use JetFire\Routing\Router;
 
 /**
  * Class App
@@ -37,8 +38,9 @@ class App extends Di
      */
     public static function getInstance()
     {
-        if (is_null(self::$instance))
+        if (is_null(self::$instance)) {
             self::$instance = new self;
+        }
         return self::$instance;
     }
 
@@ -49,10 +51,12 @@ class App extends Di
     {
         $this->config = $config;
         $this->register($this);
-        foreach ($this->config['required_files'] as $file)
+        foreach ($this->config['required_files'] as $file) {
             if (file_exists($file)) require $file;
-        foreach ($this->config['include_files'] as $key => $file)
+        }
+        foreach ($this->config['include_files'] as $key => $file) {
             if (file_exists($file)) $this->data[$key] = $this->parseFile($file);
+        }
         $this->addRules($this->config['providers'], $this->data);
     }
 
@@ -85,8 +89,9 @@ class App extends Di
     public function boot()
     {
         foreach ($this->config['providers'] as $key => $provider) {
-            if (isset($provider['boot']) && $provider['boot'])
+            if (isset($provider['boot']) && $provider['boot']) {
                 $this->get($provider['use']);
+            }
         }
     }
 
@@ -96,9 +101,10 @@ class App extends Di
     public function fire()
     {
         try {
-            if ($this->data['setting']['maintenance'])
+            if ($this->data['setting']['maintenance']) {
                 $this->get('system')->maintenance();
-            else {
+            } else {
+                /** @var Router $router */
                 $router = $this->get('routing')->getRouter();
                 $router->run();
             }
