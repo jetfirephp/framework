@@ -3,6 +3,7 @@
 namespace JetFire\Framework\System;
 
 use JetFire\Framework\App;
+use JetFire\Routing\ResponseInterface;
 use ReflectionClass;
 use ReflectionMethod;
 
@@ -47,28 +48,30 @@ class Controller
 
     /**
      * @param int $code
-     * @return mixed
+     * @return ResponseInterface
      */
     public function error($code = 500)
     {
         $routing = $this->app->get('routing');
         $routing->getResponse()->setStatusCode($code);
+        return $routing->getResponse();
     }
 
     /**
-     * @return mixed
+     * @return ResponseInterface
      */
     public function notFound()
     {
         $routing = $this->app->get('routing');
         $routing->getResponse()->setStatusCode(404);
+        return $routing->getResponse();
     }
 
     /**
      * @param null $to
      * @param array $params
      * @param int $code
-     * @return boolean
+     * @return Redirect
      */
     public function redirect($to = null, $params = [], $code = 302)
     {
@@ -92,13 +95,13 @@ class Controller
             $reflectionMethod = new ReflectionMethod($controller, $method);
             $dependencies = [];
             foreach ($reflectionMethod->getParameters() as $arg) {
-                if (isset($methodArgs[$arg->name]))
+                if (isset($methodArgs[$arg->name])) {
                     array_push($dependencies, $methodArgs[$arg->name]);
+                }
                 else if (!is_null($arg->getClass())) {
-                    if (isset($classInstance[$arg->getClass()->name]))
-                        array_push($dependencies, $classInstance[$arg->getClass()->name]);
-                    else
-                        array_push($dependencies, $this->app->get($arg->getClass()->name));
+                    isset($classInstance[$arg->getClass()->name])
+                        ? array_push($dependencies, $classInstance[$arg->getClass()->name])
+                        : array_push($dependencies, $this->app->get($arg->getClass()->name));
                 }
             }
             $dependencies = array_merge($dependencies, $methodArgs);
@@ -117,19 +120,22 @@ class Controller
     public function callController($controller, $ctrlArgs = [], $classInstance = [])
     {
         $reflector = new ReflectionClass($controller);
-        if (!$reflector->isInstantiable())
+        if (!$reflector->isInstantiable()) {
             throw new \Exception('Controller [' . $controller . '] is not instantiable.');
+        }
         $constructor = $reflector->getConstructor();
-        if (is_null($constructor))
+        if (is_null($constructor)) {
             return $this->app->get($controller);
+        }
         $dependencies = [];
         foreach ($constructor->getParameters() as $arg) {
-            if (isset($ctrlArgs[$arg->name]))
+            if (isset($ctrlArgs[$arg->name])) {
                 array_push($dependencies, $ctrlArgs[$arg->name]);
-            else if (isset($classInstance[$arg->getClass()->name]))
+            } else if (isset($classInstance[$arg->getClass()->name])) {
                 array_push($dependencies, $classInstance[$arg->getClass()->name]);
-            else
+            } else {
                 array_push($dependencies, $this->app->get($arg->getClass()->name));
+            }
         }
         $dependencies = array_merge($dependencies, $ctrlArgs);
         return $reflector->newInstanceArgs($dependencies);

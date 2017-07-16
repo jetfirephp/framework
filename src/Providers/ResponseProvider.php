@@ -1,13 +1,15 @@
 <?php
 
 namespace JetFire\Framework\Providers;
+use JetFire\Routing\ResponseInterface;
 
 
 /**
  * Class ResponseProvider
  * @package JetFire\Framework\Providers
  */
-class ResponseProvider extends Provider{
+class ResponseProvider extends Provider
+{
 
     /**
      * @var
@@ -25,25 +27,36 @@ class ResponseProvider extends Provider{
     /**
      * @param $response
      */
-    public function setResponseClass($response){
-        $this->app->addRule($response,[
+    public function setResponseClass($response)
+    {
+        $this->app->addRule($response, [
             'shared' => true,
         ]);
         $this->response = $response;
     }
 
     /**
+     * @param ResponseInterface $response
+     */
+    public function setResponse(ResponseInterface $response)
+    {
+        $this->app->register($response, $this->response);
+    }
+
+    /**
      * @return mixed
      */
-    public function getResponse(){
+    public function getResponse()
+    {
         return $this->app->get($this->response);
     }
 
     /**
      * @param $redirect
      */
-    public function setRedirectClass($redirect){
-        $this->app->addRule($redirect,[
+    public function setRedirectClass($redirect)
+    {
+        $this->app->addRule($redirect, [
             'shared' => true,
             'call' => [
                 'setApp' => [$this->app],
@@ -53,17 +66,27 @@ class ResponseProvider extends Provider{
     }
 
     /**
+     * @param ResponseInterface $redirect
+     */
+    public function setRedirect(ResponseInterface $redirect)
+    {
+        $this->app->register($redirect, $this->redirect);
+    }
+
+    /**
      * @return mixed
      */
-    public function getRedirect(){
+    public function getRedirect()
+    {
         return $this->app->get($this->redirect);
     }
 
     /**
      * @param $view
      */
-    public function setViewClass($view){
-        $this->app->addRule($view,[
+    public function setViewClass($view)
+    {
+        $this->app->addRule($view, [
             'shared' => true
         ]);
         $this->view = $view;
@@ -72,7 +95,8 @@ class ResponseProvider extends Provider{
     /**
      * @return mixed
      */
-    public function getView(){
+    public function getView()
+    {
         return $this->app->get($this->view);
     }
 
