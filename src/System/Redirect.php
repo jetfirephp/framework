@@ -3,6 +3,7 @@
 namespace JetFire\Framework\System;
 
 use JetFire\Framework\App;
+use JetFire\Routing\ResponseInterface;
 use Symfony\Component\HttpFoundation\Cookie as HttpCookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -10,7 +11,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
  * Class Redirect
  * @package JetFire\Framework\System
  */
-class Redirect extends RedirectResponse
+class Redirect extends RedirectResponse implements ResponseInterface
 {
 
     /**
@@ -31,10 +32,21 @@ class Redirect extends RedirectResponse
     /**
      * @param App $app
      */
-    public function setApp(App $app){
+    public function setApp(App $app)
+    {
         $this->app = $app;
     }
 
+    /**
+     * @param array $headers
+     */
+    public function setHeaders($headers = [])
+    {
+        foreach ($headers as $key => $content) {
+            $this->headers->set($key, $content);
+        }
+    }
+    
     /**
      * @param null $to
      * @param array $params
@@ -54,7 +66,7 @@ class Redirect extends RedirectResponse
     public function back()
     {
         $this->setTargetUrl($this->app->get('request')->getServer()->get('HTTP_REFERER'));
-        return $this->send();
+        return $this;
     }
 
     /**
@@ -67,7 +79,7 @@ class Redirect extends RedirectResponse
     {
         $this->setTargetUrl($this->app->get('response')->getView()->path($to, $params));
         $this->setStatusCode($code);
-        return $this->send();
+        return $this;
     }
 
     /**
@@ -81,7 +93,7 @@ class Redirect extends RedirectResponse
             ? $this->setTargetUrl($this->app->get('request')->root() . '/' . ltrim($url, '/'))
             : $this->setTargetUrl($url);
         $this->setStatusCode($code);
-        return $this->send();
+        return $this;
     }
 
     /**
@@ -93,8 +105,9 @@ class Redirect extends RedirectResponse
     {
         $key = is_array($key) ? $key : [$key => $value];
         $session = $this->app->get('session')->getSession();
-        foreach ($key as $k => $v)
+        foreach ($key as $k => $v) {
             $session->flash($k, $v);
+        }
         return $this;
     }
 
@@ -104,8 +117,9 @@ class Redirect extends RedirectResponse
      */
     public function withCookies(array $cookies)
     {
-        foreach ($cookies as $cookie)
+        foreach ($cookies as $cookie) {
             $this->headers->setCookie($cookie);
+        }
         return $this;
     }
 
@@ -120,5 +134,4 @@ class Redirect extends RedirectResponse
         $this->headers->setCookie(new HttpCookie($key, $value, $expire));
         return $this;
     }
-
 } 

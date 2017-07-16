@@ -46,14 +46,22 @@ class Controller
     }
 
     /**
+     * @param int $code
+     * @return mixed
+     */
+    public function error($code = 500)
+    {
+        $routing = $this->app->get('routing');
+        $routing->getResponse()->setStatusCode($code);
+    }
+
+    /**
      * @return mixed
      */
     public function notFound()
     {
         $routing = $this->app->get('routing');
         $routing->getResponse()->setStatusCode(404);
-        $routing->getRouter()->callResponse();
-        exit;
     }
 
     /**
