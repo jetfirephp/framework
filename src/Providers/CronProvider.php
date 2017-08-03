@@ -87,7 +87,7 @@ class CronProvider extends Provider
     {
         /** @var Controller $controller */
         $controller = $this->app->get('JetFire\Framework\System\Controller');
-        $callback = explode('@', $job['closure']);
+        $callback = explode('@', $job['controller']);
         if (isset($callback[1])) {
             $args = isset($job['args']) ? $job['args'] : [];
             return function () use ($controller, $callback, $args) {
