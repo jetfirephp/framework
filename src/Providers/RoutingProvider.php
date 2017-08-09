@@ -73,6 +73,7 @@ class RoutingProvider extends Provider
                     ? ['block' => $block['path'], 'view_dir' => $block['view_dir'], 'ctrl_namespace' => $block['namespace'] . '\Controllers', 'prefix' => $block['prefix']]
                     : ['block' => $block['path'], 'view_dir' => $block['view_dir'], 'ctrl_namespace' => $block['namespace'] . '\Controllers'];
                 if (isset($block['subdomain'])) $options['subdomain'] = $block['subdomain'];
+                if (isset($block['protocol'])) $options['protocol'] = $block['protocol'];
                 $this->collection->addRoutes($path, $options);
             }
         }
