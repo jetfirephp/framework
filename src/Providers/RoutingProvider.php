@@ -82,9 +82,8 @@ class RoutingProvider extends Provider
     /**
      * @param $router
      * @param $template
-     * @param $responses
      */
-    public function setRouter($router, $template, $responses)
+    public function setRouter($router, $template)
     {
         $this->app->data['template_extension'] = $extension = $template['engines'][$template['use']]['extension'];
         $response = $this->app->get($router['response']);
@@ -101,7 +100,6 @@ class RoutingProvider extends Provider
             'templateExtension' => $templateExtension,
             'generateRoutesPath' => $router['generateRoutePath']
         ]);
-        $this->router->setResponses($responses);
     }
 
     /**

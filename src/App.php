@@ -15,11 +15,11 @@ class App extends Di
     /**
      * @var App|null
      */
-    private static $instance = null;
+    protected static $instance = null;
     /**
      * @var array
      */
-    private $config = [];
+    protected $config = [];
     /**
      * @var array
      */
@@ -52,10 +52,10 @@ class App extends Di
         $this->config = $config;
         $this->register($this);
         foreach ($this->config['required_files'] as $file) {
-            if (file_exists($file)) require $file;
+            if (is_file($file)) require $file;
         }
         foreach ($this->config['include_files'] as $key => $file) {
-            if (file_exists($file)) $this->data[$key] = $this->parseFile($file);
+            $this->data[$key] = is_file($file) ? $this->parseFile($file) : $file;
         }
         $this->addRules($this->config['providers'], $this->data);
     }
@@ -64,7 +64,7 @@ class App extends Di
      * @param $file
      * @return mixed
      */
-    private function parseFile($file){
+    public function parseFile($file){
         $ext = explode('.', $file);
         switch (end($ext)){
             case 'php':
