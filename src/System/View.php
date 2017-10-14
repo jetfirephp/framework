@@ -48,14 +48,13 @@ class View extends TemplateView
     /**
      * @param null $path
      * @param array $params
-     * @param string $subdomain
      * @return mixed
      */
-    public function path($path = null, $params = [], $subdomain = '')
+    public function path($path = null, $params = [])
     {
-        if (!is_null($path))
-            return $this->app->get('routing')->getCollection()->getRoutePath($path, $params, $subdomain);
-        return $this->app->get('request')->root();
+        return (!is_null($path))
+            ? $this->app->get('routing')->getCollection()->getRoutePath($path, $params)
+            : $this->app->get('request')->root();
     }
 
 } 
