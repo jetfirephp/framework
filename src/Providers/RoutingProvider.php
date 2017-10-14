@@ -104,14 +104,14 @@ class RoutingProvider extends Provider
 
     /**
      * @param $class
-     * @param array $beforeRules
-     * @param array $afterRules
+     * @param array $rules
      */
-    public function setMiddleware($class, $beforeRules = [], $afterRules = [])
+    public function setMiddleware($class, $rules = [])
     {
         $this->middleware = new $class($this->router);
-        $this->middleware->setBeforeCallback($beforeRules);
-        $this->middleware->setAfterCallback($afterRules);
+        foreach ($rules as $action => $rule){
+            $this->middleware->setCallbackAction($action, $rule);
+        }
         $this->router->addMiddleware($this->middleware);
     }
 
