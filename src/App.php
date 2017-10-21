@@ -55,7 +55,7 @@ class App extends Di
             if (is_file($file)) require $file;
         }
         foreach ($this->config['include_files'] as $key => $file) {
-            $this->data[$key] = is_file($file) ? $this->parseFile($file) : $file;
+            $this->data[$key] = (!is_array($file) && is_file($file)) ? $this->parseFile($file) : $file;
         }
         $this->addRules($this->config['providers'], $this->data);
     }
