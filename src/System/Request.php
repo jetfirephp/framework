@@ -4,7 +4,7 @@ namespace JetFire\Framework\System;
 
 use JetFire\Framework\Providers\RoutingProvider;
 use JetFire\Framework\Providers\SessionProvider;
-use JetFire\Validation\Validation;
+use JetFire\Validator\Validator;
 use JetFire\Http\Request as HttpRequest;
 
 /**
@@ -87,36 +87,36 @@ class Request extends HttpRequest
     public function validate()
     {
         $validate = ($this->method() == 'GET') ? 'validateGet' : 'validatePost';
-        $validation = new Validation();
+        $validator = new Validator();
         $args = func_num_args();
         $request = get_called_class();
         $response = false;
         switch($args){
             case 0:
                 if (method_exists($request, 'rules') && property_exists($request, 'messages'))
-                    $response = $validation->$validate($request::rules(), $request::$messages);
+                    $response = $validator->$validate($request::rules(), $request::$messages);
                 else if (method_exists($request, 'rules') && !property_exists($request, 'messages'))
-                    $response = $validation->$validate($request::rules());
+                    $response = $validator->$validate($request::rules());
                 break;
             case 1:
                 $param = func_get_arg(0);
                 if (is_array($param)) {
                     if (property_exists($request, 'messages'))
-                        $response = $validation->$validate($param, $request::$messages);
+                        $response = $validator->$validate($param, $request::$messages);
                     else
-                        $response = $validation->$validate($param);
+                        $response = $validator->$validate($param);
                 } else {
                     if (method_exists($request, $param) && property_exists($request, 'messages'))
-                        $response = $validation->$validate($request::$param(), $request::$messages);
+                        $response = $validator->$validate($request::$param(), $request::$messages);
                     else if (method_exists($request, $param) && !property_exists($request, 'messages'))
-                        $response = $validation->$validate($request::$param());
+                        $response = $validator->$validate($request::$param());
                 }
                 break;
             case 2:
-                $response = $validation->$validate(func_get_arg(0), func_get_arg(1));
+                $response = $validator->$validate(func_get_arg(0), func_get_arg(1));
                 break;
             case 3:
-                $response = $validation->$validate(func_get_arg(0), func_get_arg(1), func_get_arg(2));
+                $response = $validator->$validate(func_get_arg(0), func_get_arg(1), func_get_arg(2));
                 break;
         }
         if ($response['valid'] === true) {
