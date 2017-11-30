@@ -57,8 +57,9 @@ class CronProvider extends Provider
             } elseif (isset($job['route'])) {
                 $job['closure'] = $this->callRoute($job);
             }
-            if (!isset($job['output']))
+            if (!isset($job['output'])) {
                 $job['output'] = ROOT . '/storage/cron/command.log';
+            }
             $this->jobby->add($name, $job);
         }
     }

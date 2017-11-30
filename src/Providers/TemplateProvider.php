@@ -41,8 +41,9 @@ class TemplateProvider extends Provider{
         if($this->env == 'dev'){
             $this->config['cache'] = false;
             $this->config['debug'] = true;
-        }else
+        }else {
             $this->config['debug'] = false;
+        }
         $this->app->addRule($this->config['class'],[
             'shared' => true,
             'construct' => [$this->config],
@@ -76,8 +77,9 @@ class TemplateProvider extends Provider{
      *
      */
     public function setExtensions(){
-        foreach($this->config['functions'] as $extension)
+        foreach($this->config['functions'] as $extension) {
             $this->getTemplate()->addExtension($this->app->get($extension));
+        }
     }
 
 

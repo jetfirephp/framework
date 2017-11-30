@@ -44,10 +44,12 @@ class SessionProvider extends Provider
             $handler = call_user_func_array([$this, $this->handlers[$config['handlers'][$config[$env]['handler']]['class']]], [$config['handlers'][$config[$env]['handler']]]);
         } elseif (isset($config['handlers'][$config[$env]['handler']]['callback'])) {
             $callback = $config['handlers'][$config[$env]['handler']]['callback'];
-            if (!$this->app->has($callback))
+            if (!$this->app->has($callback)) {
                 throw new \Exception('Callback : ' . $callback . ' not found in DI.');
-            if (!method_exists(($provider = $this->app->get($callback)), 'getHandler'))
+            }
+            if (!method_exists(($provider = $this->app->get($callback)), 'getHandler')) {
                 throw new \Exception('Method "getHandler" not found in ' . get_class($provider));
+            }
             $handler = $provider->getHandler($config['handlers'][$config[$env]['handler']]);
         }
         $storage = call_user_func_array([$this, $this->storages[$config['storages'][$config[$env]['storage']]['class']]], [$config['storages'][$config[$env]['storage']], $handler]);
@@ -78,9 +80,9 @@ class SessionProvider extends Provider
      */
     protected function nativeStorage($config, $handler)
     {
-        if (isset($config['args']))
-            return new $config['class']($config['args'], $handler);
-        return new $config['class']([], $handler);
+        return (isset($config['args']))
+            ? new $config['class']($config['args'], $handler)
+            : new $config['class']([], $handler);
     }
 
     /**
@@ -108,9 +110,9 @@ class SessionProvider extends Provider
      */
     protected function fileHandler($config)
     {
-        if (isset($config['args']) && isset($config['args'][0]))
-            return new $config['class']($config['args'][0]);
-        return new $config['class'];
+        return (isset($config['args']) && isset($config['args'][0]))
+            ? new $config['class']($config['args'][0])
+            : new $config['class'];
     }
 
     /**

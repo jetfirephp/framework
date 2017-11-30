@@ -93,10 +93,12 @@ class ConsoleProvider extends Provider
      */
     private function setCommands()
     {
-        foreach ($this->commands['di'] as $command)
+        foreach ($this->commands['di'] as $command) {
             $this->cli->add($this->app->get($command));
-        foreach ($this->commands['new'] as $instance)
+        }
+        foreach ($this->commands['new'] as $instance) {
             $this->cli->add(new $instance);
+        }
     }
 
     /**

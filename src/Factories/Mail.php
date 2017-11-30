@@ -1,6 +1,7 @@
 <?php
 
 namespace JetFire\Framework\Factories;
+
 use JetFire\Framework\App;
 
 
@@ -8,7 +9,8 @@ use JetFire\Framework\App;
  * Class Mail
  * @package JetFire\Framework\Factories
  */
-class Mail {
+class Mail
+{
 
     /**
      * @var
@@ -18,17 +20,21 @@ class Mail {
     /**
      * @return mixed
      */
-    public function __construct(){
-        if(is_null(self::$instance))
+    public function __construct()
+    {
+        if (is_null(self::$instance)) {
             self::$instance = App::getInstance()->get('mail')->getMailer();
+        }
     }
 
     /**
      * @return mixed
      */
-    public static function getInstance(){
-        if(is_null(self::$instance))
+    public static function getInstance()
+    {
+        if (is_null(self::$instance)) {
             self::$instance = App::getInstance()->get('mail')->getMailer();
+        }
         return self::$instance;
     }
 
@@ -38,7 +44,8 @@ class Mail {
      * @param $content
      * @param null $file
      */
-    public static function sendTo($to,$subject,$content,$file = null){
+    public static function sendTo($to, $subject, $content, $file = null)
+    {
         $from = (isset(app()->data['app']['settings']['mail']['from']))
             ? app()->data['app']['settings']['mail']['from']
             : 'contact@jetfire.fr';
@@ -46,8 +53,9 @@ class Mail {
             ->from($from)
             ->subject($subject)
             ->html($content);
-        if(!is_null($file))
+        if (!is_null($file)) {
             $message->file($file);
+        }
         $message->send();
     }
 
@@ -56,8 +64,9 @@ class Mail {
      * @param $args
      * @return mixed
      */
-    public static function __callStatic($name,$args){
-        return call_user_func_array([self::getInstance(),$name],$args);
+    public static function __callStatic($name, $args)
+    {
+        return call_user_func_array([self::getInstance(), $name], $args);
     }
 
     /**
@@ -65,8 +74,9 @@ class Mail {
      * @param $args
      * @return mixed
      */
-    public function __call($name,$args){
-        return call_user_func_array([self::getInstance(),$name],$args);
+    public function __call($name, $args)
+    {
+        return call_user_func_array([self::getInstance(), $name], $args);
     }
 
 } 

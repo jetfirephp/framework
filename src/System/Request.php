@@ -134,9 +134,11 @@ class Request extends HttpRequest
     {
         $values = [];
         foreach ($this->request->all() as $key => $post) {
-            if (strtolower($key) != 'submit' && strtoupper($key) != '_METHOD' && strtolower($key) != '_token')
-                if ($this->has($key))
+            if (strtolower($key) != 'submit' && strtoupper($key) != '_METHOD' && strtolower($key) != '_token') {
+                if ($this->has($key)) {
                     $values[$key] = $this->input($key);
+                }
+            }
         }
         return $values;
     }
@@ -160,8 +162,9 @@ class Request extends HttpRequest
         if ($this->method() != 'GET') {
             if (is_array($value)) $token = $value;
             if (!$this->hasXss($token)) return false;
-            if (!is_array($value) && !is_null($value))
+            if (!is_array($value) && !is_null($value)) {
                 return ($this->request->get($value)) ? true : false;
+            }
             return ($this->request->has('submit')) ? true : false;
         }
         return false;

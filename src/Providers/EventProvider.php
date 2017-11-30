@@ -44,10 +44,11 @@ class EventProvider extends Provider
             /** @var Controller $controller */
             $controller = $this->app->get('JetFire\Framework\System\Controller');
             foreach ($event as $callbacks) {
-                if ($callbacks['type'] == 'linear' && isset($callbacks['callback']))
+                if ($callbacks['type'] == 'linear' && isset($callbacks['callback'])) {
                     $this->callSynchronous($controller, $callbacks, $value);
-                elseif ($callbacks['type'] == 'async' && isset($callbacks['route']))
+                } elseif ($callbacks['type'] == 'async' && isset($callbacks['route'])) {
                     $this->callAsynchronous($callbacks, $value);
+                }
             }
         }
     }
@@ -60,8 +61,9 @@ class EventProvider extends Provider
     private function callSynchronous(Controller $controller, $callbacks, $value)
     {
         $callback = explode('@', $callbacks['callback']);
-        if (class_exists($callback[0]) && method_exists($callback[0], $callback[1]))
+        if (class_exists($callback[0]) && method_exists($callback[0], $callback[1])) {
             $controller->callMethod($callback[0], $callback[1], $value);
+        }
     }
 
     /**

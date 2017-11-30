@@ -32,14 +32,22 @@ class View extends TemplateView
      */
     public function render($path, $data = [])
     {
-        $this->setPath($this->app->get('routing')->getRouter()->route->getTarget('view_dir'));
+        $viewDir = is_array($viewDir = $this->app->get('routing')->getRouter()->route->getTarget('view_dir')) ? $viewDir : [$viewDir];
+        $this->setPath($viewDir);
         $this->setExtension($this->app->data['template_extension']);
-        (!is_array($path) && is_file($this->app->get('routing')->getRouter()->route->getTarget('view_dir') . $path . $this->app->data['template_extension']))
-            ? $this->setTemplate($path)
-            : $this->setContent($path);
+        if(is_array($path)){
+            $this->setContent($path);
+        }else {
+            foreach ($viewDir as $dir) {
+                if (is_file(rtrim($dir, '/') . '/' . ltrim($path, '/') . $this->app->data['template_extension'])) {
+                    $this->setTemplate($path);
+                }
+            }
+        }
         $flash = $this->app->get('session')->getSession()->allFlash();
-        foreach ($flash as $key => $content)
+        foreach ($flash as $key => $content) {
             $data[$key] = $content;
+        }
         $this->addData($data);
         return $this->app->get('template')->getTemplate()->render($this);
     }

@@ -13,11 +13,12 @@ use JetFire\Framework\App;
  * @method static get($key, $default = null)
  * @method static set($key, $value)
  * @method static destroy($key = null)
- * @method static flash($key,$value)
- * @method static getFlash($key,$default = [])
+ * @method static flash($key, $value)
+ * @method static getFlash($key, $default = [])
  * @method static allFlash()
  */
-class Session {
+class Session
+{
 
     /**
      * @var
@@ -27,17 +28,21 @@ class Session {
     /**
      *
      */
-    public function __construct(){
-        if(is_null(self::$instance))
+    public function __construct()
+    {
+        if (is_null(self::$instance)) {
             self::$instance = App::getInstance()->get('session')->getSession();
+        }
     }
 
     /**
      * @return mixed
      */
-    public static function getInstance(){
-        if(is_null(self::$instance))
+    public static function getInstance()
+    {
+        if (is_null(self::$instance)) {
             self::$instance = App::getInstance()->get('session')->getSession();
+        }
         return self::$instance;
     }
 
@@ -46,8 +51,9 @@ class Session {
      * @param $args
      * @return mixed
      */
-    public static function __callStatic($name,$args){
-        return call_user_func_array([self::getInstance(),$name],$args);
+    public static function __callStatic($name, $args)
+    {
+        return call_user_func_array([self::getInstance(), $name], $args);
     }
 
     /**
@@ -55,7 +61,8 @@ class Session {
      * @param $args
      * @return mixed
      */
-    public function __call($name,$args){
-        return call_user_func_array([self::getInstance(),$name],$args);
+    public function __call($name, $args)
+    {
+        return call_user_func_array([self::getInstance(), $name], $args);
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 namespace JetFire\Framework\Factories;
+
 use JetFire\Framework\App;
 
 
@@ -8,7 +9,8 @@ use JetFire\Framework\App;
  * Class Server
  * @package JetFire\Framework\Factories
  */
-class Server {
+class Server
+{
 
     /**
      * @var
@@ -18,17 +20,21 @@ class Server {
     /**
      * @return mixed
      */
-    public function __construct(){
-        if(is_null(self::$instance))
+    public function __construct()
+    {
+        if (is_null(self::$instance)) {
             self::$instance = App::getInstance()->get('request')->getServer();
+        }
     }
 
     /**
      * @return mixed
      */
-    public static function getInstance(){
-        if(is_null(self::$instance))
+    public static function getInstance()
+    {
+        if (is_null(self::$instance)) {
             self::$instance = App::getInstance()->get('request')->getServer();
+        }
         return self::$instance;
     }
 
@@ -37,8 +43,9 @@ class Server {
      * @param $args
      * @return mixed
      */
-    public static function __callStatic($name,$args){
-        return call_user_func_array([self::getInstance(),$name],$args);
+    public static function __callStatic($name, $args)
+    {
+        return call_user_func_array([self::getInstance(), $name], $args);
     }
 
     /**
@@ -46,8 +53,9 @@ class Server {
      * @param $args
      * @return mixed
      */
-    public function __call($name,$args){
-        return call_user_func_array([self::getInstance(),$name],$args);
+    public function __call($name, $args)
+    {
+        return call_user_func_array([self::getInstance(), $name], $args);
     }
 
 }

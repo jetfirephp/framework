@@ -35,9 +35,9 @@ class SystemProvider extends Provider
      */
     public function setDebugger($debugger)
     {
-        if ($this->env == 'prod')
+        if ($this->env == 'prod') {
             Kint::enabled(false);
-        else {
+        } else {
             if (isset($debugger['mode'])) Kint::enabled($debugger['mode']);
             Kint::$theme = isset($debugger['theme']) ? $debugger['theme'] : 'original';
         }

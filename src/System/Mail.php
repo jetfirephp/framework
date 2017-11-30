@@ -45,8 +45,9 @@ class Mail extends MailComponent
             ->from($from)
             ->subject($subject)
             ->html($content);
-        if (!is_null($file))
+        if (!is_null($file)) {
             $message->file($file);
+        }
         return $message->send();
     }
 

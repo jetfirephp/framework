@@ -141,7 +141,7 @@ class RoutingProvider extends Provider
                 $ext => function (Route $route) use ($template) {
                     $this->app->addRule($template['view'], ['shared' => true]);
                     $view = $this->app->get($template['view']);
-                    $dir = ($route->getTarget('view_dir') == '')
+                    $dir = (empty($route->getTarget('view_dir')))
                         ? substr($route->getTarget('template'), 0, strrpos($route->getTarget('template'), '/'))
                         : $route->getTarget('view_dir');
                     $view->setPath($dir);

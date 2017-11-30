@@ -2,16 +2,16 @@
 
 namespace JetFire\Framework\Factories;
 
-
 use JetFire\Framework\App;
 
 /**
  * Class View
  * @package JetFire\Framework\Factories
- * @method static path($path = null,$params = [])
- * @method static render($path,$data = [])
+ * @method static path($path = null, $params = [])
+ * @method static render($path, $data = [])
  */
-class View {
+class View
+{
     /**
      * @var
      */
@@ -20,17 +20,21 @@ class View {
     /**
      *
      */
-    public function __construct(){
-        if(is_null(self::$instance))
+    public function __construct()
+    {
+        if (is_null(self::$instance)) {
             self::$instance = App::getInstance()->get('response')->getView();
+        }
     }
 
     /**
      * @return mixed
      */
-    public static function getInstance(){
-        if(is_null(self::$instance))
+    public static function getInstance()
+    {
+        if (is_null(self::$instance)) {
             self::$instance = App::getInstance()->get('response')->getView();
+        }
         return self::$instance;
     }
 
@@ -39,8 +43,9 @@ class View {
      * @param $args
      * @return mixed
      */
-    public static function __callStatic($name,$args){
-        return call_user_func_array([self::getInstance(),$name],$args);
+    public static function __callStatic($name, $args)
+    {
+        return call_user_func_array([self::getInstance(), $name], $args);
     }
 
     /**
@@ -48,7 +53,8 @@ class View {
      * @param $args
      * @return mixed
      */
-    public function __call($name,$args){
-        return call_user_func_array([self::getInstance(),$name],$args);
+    public function __call($name, $args)
+    {
+        return call_user_func_array([self::getInstance(), $name], $args);
     }
 } 
