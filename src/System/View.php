@@ -61,7 +61,7 @@ class View extends TemplateView
     public function path($path = null, $params = [])
     {
         return (!is_null($path))
-            ? $this->app->get('routing')->getCollection()->getRoutePath($path, $params)
+            ? $this->app->get('routing')->getRouter()->getRoutePath($path, $params)
             : $this->app->get('request')->root();
     }
 
