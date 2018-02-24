@@ -47,37 +47,42 @@ class ConsoleProvider extends Provider
 
     /**
      * @param $orm
+     * @param string $default_db
      */
-    public function ormCommands($orm)
+    public function ormCommands($orm, $default_db = 'default')
     {
-        if (is_array($orm)) foreach ($orm as $o) call_user_func_array([$this, $o . 'Commands'], []);
+        if (is_array($orm)) {
+            foreach ($orm as $o) {
+                call_user_func_array([$this, $o . 'Commands'], [$default_db]);
+            }
+        }
 
         $this->setCommands();
     }
 
     /**
-     *
+     * @param string $default_db
      */
-    private function pdoCommands()
+    private function pdoCommands($default_db = 'default')
     {
 
     }
 
     /**
-     *
+     * @param string $default_db
      */
-    private function redbeanCommands()
+    private function redbeanCommands($default_db = 'default')
     {
 
     }
 
     /**
-     *
+     * @param string $default_db
      */
-    private function doctrineCommands()
+    private function doctrineCommands($default_db = 'default')
     {
         /** @var EntityManager $em */
-        $em = Model::orm('doctrine')->getOrm();
+        $em = Model::orm('doctrine')->db($default_db)->getOrm();
         $helperSet = new HelperSet([
             'db' => new ConnectionHelper($em->getConnection()),
             'em' => new EntityManagerHelper($em),

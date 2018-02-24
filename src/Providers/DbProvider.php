@@ -35,20 +35,34 @@ class DbProvider extends Provider
 
     /**
      * @param array $ormCollection
+     * @param $default_db
      * @param array $db
      * @param $blocks
      * @param string $env
      */
-    public function init($ormCollection, $db, $blocks, $env)
+    public function init($ormCollection, $default_db, $db, $blocks, $env)
     {
         $this->ormCollection = $ormCollection;
         $this->env = $env;
         $params = [];
         foreach ($blocks as $block) {
-            $block_path = (isset($block['model']))
-                ? ($path = rtrim($block['model'], '/'))
-                : ($path = rtrim($block['path'], '/') . '/Models/');
-            if (is_dir($block_path)) $params['path'][] = $block_path;
+            $path = rtrim($block['path'], '/');
+            $block_path = $path . '/Models/';
+            if(isset($block['model'])){
+                if(is_array($block['model']) && isset($block['model'][$default_db])){
+                    $path = rtrim($block['model'][$default_db], '/');
+                    $block_path = $path;
+                }elseif(is_string($block['model'])) {
+                    $path = rtrim($block['model'], '/');
+                    $block_path = $path;
+                }else{
+                    continue;
+                }
+            }
+
+            if (is_dir($block_path)) {
+                $params['path'][] = $block_path;
+            }
             $params['repositories'][] = (isset($block['repositories']))
                 ? ['path' => $block['repositories']['path'], 'namespace' => $block['repositories']['namespace']]
                 : ['path' => $path, 'namespace' => $block['namespace'] . '\Models'];
