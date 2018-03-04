@@ -34,25 +34,23 @@ class SessionProvider extends Provider
 
     /**
      * @param array $config
-     * @param $env
+     * @param $use
      * @throws \Exception
      */
-    public function init($config = [], $env)
+    public function init($config = [], $use)
     {
         $handler = null;
-        if (isset($this->handlers[$config['handlers'][$config[$env]['handler']]['class']])) {
-            $handler = call_user_func_array([$this, $this->handlers[$config['handlers'][$config[$env]['handler']]['class']]], [$config['handlers'][$config[$env]['handler']]]);
-        } elseif (isset($config['handlers'][$config[$env]['handler']]['callback'])) {
-            $callback = $config['handlers'][$config[$env]['handler']]['callback'];
-            if (!$this->app->has($callback)) {
+        if (isset($this->handlers[$config['handlers'][$use['handler']]['class']])) {
+            $handler = call_user_func_array([$this, $this->handlers[$config['handlers'][$use['handler']]['class']]], [$config['handlers'][$use['handler']]]);
+        } elseif (isset($config['handlers'][$use['handler']]['callback'])) {
+            $callback = $config['handlers'][$use['handler']]['callback'];
+            if (!$this->app->has($callback))
                 throw new \Exception('Callback : ' . $callback . ' not found in DI.');
-            }
-            if (!method_exists(($provider = $this->app->get($callback)), 'getHandler')) {
+            if (!method_exists(($provider = $this->app->get($callback)), 'getHandler'))
                 throw new \Exception('Method "getHandler" not found in ' . get_class($provider));
-            }
-            $handler = $provider->getHandler($config['handlers'][$config[$env]['handler']]);
+            $handler = $provider->getHandler($config['handlers'][$use['handler']]);
         }
-        $storage = call_user_func_array([$this, $this->storages[$config['storages'][$config[$env]['storage']]['class']]], [$config['storages'][$config[$env]['storage']], $handler]);
+        $storage = call_user_func_array([$this, $this->storages[$config['storages'][$use['storage']]['class']]], [$config['storages'][$use['storage']], $handler]);
         $this->session = new $config['class']($storage);
         $this->app->register($this->session);
     }

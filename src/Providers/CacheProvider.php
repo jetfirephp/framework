@@ -32,13 +32,14 @@ class CacheProvider extends Provider
     /**
      * CacheProvider constructor.
      * @param array $config
-     * @param $env
+     * @param $use
+     * @throws \Exception
      */
-    public function init($config = [], $env)
+    public function init($config = [], $use)
     {
         $this->config = $config;
-        $this->cache = $this->getCache($config[$env]);
-        $this->app->addAlias($config[$env], $config['drivers'][$config[$env]]['class']);
+        $this->cache = $this->getCache($use);
+        $this->app->addAlias($use, $config['drivers'][$use]['class']);
     }
 
     /**

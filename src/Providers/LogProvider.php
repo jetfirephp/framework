@@ -59,14 +59,14 @@ class LogProvider extends Provider
 
     /**
      * @param $config
-     * @param $env
+     * @param $use
      * @param array $default
      */
-    public function init($config, $env, $default = [])
+    public function init($config, $use, $default = [])
     {
         $this->config = $config;
         $this->default = $default;
-        foreach ($this->config[$env] as $id => $logger) {
+        foreach ($use as $id => $logger) {
             if (isset($logger['handlers'])) {
                 foreach ($logger['handlers'] as $handler) {
                     $this->setupHandler($id, $handler);
